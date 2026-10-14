@@ -1,0 +1,7699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shower Schedule | Portal</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    background:white;
+    color:black;
+    font-family:Arial,Helvetica,sans-serif
+}
+
+header{
+    background:black;
+    color:white;
+    text-align:center;
+    padding:20px
+}
+
+header h1{
+    margin:0;
+    font-size:30px
+}
+
+header p{
+    margin:8px 0 0;
+    font-size:16px
+}
+
+nav{
+    background:white;
+    border-bottom:3px solid black;
+    padding:12px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px
+}
+
+nav button{
+    background:white;
+    border:2px solid #0057b8;
+    color:#0057b8;
+    font-weight:bold;
+    font-size:16px;
+    padding:10px 15px;
+    border-radius:6px;
+    cursor:pointer
+}
+
+nav button:hover{
+    background:#eef6ff
+}
+
+.section{
+    display:none;
+    padding:20px;
+    max-width:1500px;
+    margin:auto
+}
+
+.section.active{
+    display:block
+}
+
+.section-title{
+    color:#0057b8;
+    font-weight:bold;
+    font-size:27px;
+    border-bottom:3px solid black;
+    padding-bottom:8px;
+    margin-bottom:20px
+}
+
+.controls{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:15px;
+    margin-bottom:20px
+}
+
+label{
+    font-weight:bold;
+    font-size:17px
+}
+
+select,input,textarea{
+    font-family:Arial,Helvetica,sans-serif
+}
+
+select{
+    min-width:150px;
+    min-height:52px;
+    padding:8px 12px;
+    font-size:18px;
+    font-weight:bold;
+    border:2px solid black;
+    border-radius:6px;
+    background:white;
+    color:black;
+    cursor:pointer
+}
+
+.action-button{
+    min-height:52px;
+    padding:10px 20px;
+    font-size:18px;
+    font-weight:bold;
+    border:2px solid black;
+    background:white;
+    color:black;
+    border-radius:6px;
+    cursor:pointer
+}
+
+.action-button:hover{
+    background:#eee
+}
+
+.blue-button{
+    border-color:#0057b8;
+    color:#0057b8
+}
+
+.calendar-wrapper{
+    width:100%;
+    overflow-x:auto
+}
+
+.calendar-grid{
+    display:grid;
+    grid-template-columns:repeat(7,minmax(150px,1fr));
+    gap:6px;
+    min-width:1080px
+}
+
+.day-header{
+    background:black;
+    color:white;
+    text-align:center;
+    font-weight:bold;
+    padding:12px;
+    font-size:17px
+}
+
+.calendar-day{
+    border:2px solid black;
+    min-height:145px;
+    padding:10px;
+    background:white
+}
+
+.calendar-day.invalid{
+    background:#eee
+}
+
+.day-number{
+    font-size:21px;
+    font-weight:bold;
+    margin-bottom:10px
+}
+
+.calendar-day select{
+    width:100%;
+    min-width:0;
+    min-height:58px;
+    font-size:17px
+}
+
+.month-title{
+    font-size:24px;
+    font-weight:bold;
+    text-align:center;
+    margin:30px 0 12px;
+    padding:10px;
+    border:3px solid black;
+    background:white
+}
+
+.tracker-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px
+}
+
+.tracker-table th,
+.tracker-table td{
+    border:2px solid black;
+    padding:10px;
+    text-align:center
+}
+
+.tracker-table th{
+    background:black;
+    color:white;
+    font-size:17px
+}
+
+.tracker-table td{
+    font-size:17px
+}
+
+.tracker-table select{
+    width:100%;
+    min-width:180px;
+    min-height:58px
+}
+
+.contract{
+    border:3px solid black;
+    padding:25px;
+    line-height:1.6;
+    font-size:18px
+}
+
+.contract h2{
+    text-align:center;
+    margin-top:0
+}
+
+.contract h3{
+    margin-bottom:5px
+}
+
+.agreed-rule{
+    border:3px solid black;
+    padding:15px;
+    font-weight:bold;
+    font-size:20px;
+    margin:15px 0
+}
+
+.paper{
+    border:3px solid black;
+    padding:25px;
+    min-height:600px
+}
+
+.paper h2{
+    text-align:center;
+    margin-top:0
+}
+
+.paper-row{
+    margin:18px 0
+}
+
+.paper-row label{
+    display:block;
+    margin-bottom:8px
+}
+
+.paper-row input,
+.paper-row select{
+    width:100%;
+    max-width:600px
+}
+
+.paper-row textarea{
+    width:100%;
+    min-height:180px;
+    border:2px solid black;
+    padding:12px;
+    font-size:18px;
+    resize:vertical
+}
+
+.saved-item{
+    border:2px solid black;
+    padding:18px;
+    margin-bottom:15px
+}
+
+.saved-item h3{
+    margin-top:0
+}
+
+.saved-item pre{
+    white-space:pre-wrap;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:16px
+}
+
+.login-screen{
+    position:fixed;
+    inset:0;
+    background:white;
+    z-index:9999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px
+}
+
+.login-box{
+    width:100%;
+    max-width:450px;
+    border:3px solid black;
+    padding:30px;
+    text-align:center
+}
+
+.login-box h1{
+    margin-top:0
+}
+
+.login-box input{
+    width:100%;
+    height:55px;
+    border:2px solid black;
+    font-size:20px;
+    padding:10px;
+    margin:15px 0;
+    text-align:center
+}
+
+.login-box button{
+    width:100%;
+    height:55px;
+    font-size:19px;
+    font-weight:bold;
+    border:2px solid black;
+    background:white;
+    cursor:pointer
+}
+
+.login-box button:hover{
+    background:#eee
+}
+
+#loginMessage{
+    color:black;
+    font-weight:bold;
+    min-height:25px;
+    margin-top:10px
+}
+
+.view-notice{
+    border:2px solid black;
+    padding:12px;
+    margin-bottom:20px;
+    font-weight:bold;
+    text-align:center
+}
+
+.saved-month{
+    border:3px solid black;
+    padding:18px;
+    margin-bottom:20px
+}
+
+.saved-month h3{
+    margin-top:0;
+    color:#0057b8
+}
+
+.saved-month-grid{
+    display:grid;
+    grid-template-columns:repeat(7,minmax(120px,1fr));
+    gap:4px;
+    overflow-x:auto
+}
+
+.saved-month-day{
+    border:1px solid black;
+    min-height:100px;
+    padding:7px
+}
+
+.saved-month-day strong{
+    display:block;
+    margin-bottom:8px
+}
+
+.delete-button{
+    margin-top:10px;
+    min-height:45px;
+    padding:8px 15px;
+    font-size:16px;
+    font-weight:bold;
+    border:2px solid black;
+    background:white;
+    cursor:pointer
+}
+
+.delete-button:hover{
+    background:#eee
+}
+
+.points-box{
+    border:3px solid black;
+    padding:25px;
+    margin-bottom:25px;
+    text-align:center
+}
+
+.points-number{
+    font-size:42px;
+    font-weight:bold;
+    margin-bottom:8px
+}
+
+.points-goal{
+    font-size:20px;
+    font-weight:bold;
+    margin-bottom:15px
+}
+
+.points-progress{
+    width:100%;
+    max-width:700px;
+    height:28px;
+    border:2px solid black;
+    margin:0 auto 20px;
+    background:white
+}
+
+.points-progress-fill{
+    height:100%;
+    width:0%;
+    background:#0057b8
+}
+
+.reward-history{
+    border:3px solid black;
+    padding:20px
+}
+
+.reward-form{
+    border-bottom:3px solid black;
+    padding-bottom:20px;
+    margin-bottom:20px
+}
+
+.reward-entry{
+    border:2px solid black;
+    padding:18px;
+    margin-bottom:15px
+}
+
+.reward-entry h3{
+    margin-top:0;
+    color:#0057b8
+}
+
+.hidden-for-view{
+    display:none!important
+}
+
+.request-modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:9999;
+    padding:20px;
+    overflow-y:auto
+}
+
+.request-modal-box{
+    background:white;
+    border:3px solid black;
+    max-width:850px;
+    margin:40px auto;
+    padding:20px
+}
+
+.request-modal-box input,
+.request-modal-box textarea{
+    width:100%;
+    border:2px solid black;
+    padding:12px;
+    font-size:17px;
+    border-radius:6px
+}
+
+.request-card{
+    border:2px solid black;
+    padding:18px;
+    margin-bottom:15px;
+    background:white
+}
+
+.request-card h3{
+    margin-top:0;
+    color:#0057b8
+}
+
+.request-card pre{
+    white-space:pre-wrap;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:16px;
+    line-height:1.5
+}
+
+.request-status{
+    margin-top:10px;
+    font-weight:bold
+}
+
+.request-pending{
+    border-left:8px solid #0057b8
+}
+
+.request-approved{
+    border-left:8px solid black
+}
+
+.request-denied{
+    border-left:8px solid #777
+}
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(250px,1fr));
+    gap:18px
+}
+
+.dashboard-card,
+.schedule-tool-box,
+.agreement-box,
+.settings-box{
+    border:3px solid black;
+    padding:20px;
+    margin-bottom:20px
+}
+
+.dashboard-card h3,
+.agreement-box h3{
+    margin-top:0;
+    color:#0057b8
+}
+
+.dashboard-value{
+    font-size:28px;
+    font-weight:bold
+}
+
+.schedule-result{
+    border:2px solid black;
+    padding:18px;
+    margin-top:20px
+}
+
+.schedule-result strong{
+    color:#0057b8
+}
+
+.agreement-box{
+    white-space:pre-line
+}
+
+.settings-row{
+    border-bottom:2px solid black;
+    padding:15px 0
+}
+
+.settings-row:last-child{
+    border-bottom:none
+}
+
+.change-log-entry,
+.countdown-entry,
+.fairness-result,
+.rules-box{
+    border:2px solid black;
+    padding:16px;
+    margin-top:14px
+}
+
+.change-log-entry h3,
+.countdown-entry h3{
+    margin-top:0;
+    color:#0057b8
+}
+
+.countdown-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(120px,1fr));
+    gap:12px;
+    margin-top:18px
+}
+
+.countdown-number{
+    border:2px solid black;
+    padding:14px;
+    text-align:center
+}
+
+.countdown-number strong{
+    display:block;
+    font-size:26px
+}
+
+.fairness-ok,
+.fairness-warning{
+    font-weight:bold
+}
+
+@media(max-width:700px){
+    .section{
+        padding:12px
+    }
+
+    .section-title{
+        font-size:23px
+    }
+
+    select{
+        width:100%
+    }
+
+    .controls{
+        display:block
+    }
+
+    .controls>*{
+        margin-bottom:10px
+    }
+
+    .action-button{
+        width:100%
+    }
+
+    .contract{
+        font-size:16px;
+        padding:15px
+    }
+
+    .dashboard-grid{
+        grid-template-columns:1fr
+    }
+
+    .countdown-grid{
+        grid-template-columns:1fr
+    }
+}
+
+@media print{
+    nav,
+    .controls,
+    .delete-button{
+        display:none!important
+    }
+
+    .section{
+        display:block!important
+    }
+
+    .login-screen{
+        display:none!important
+    }
+}
+
+.submission-signature {
+    display: block;
+    width: 100%;
+    max-width: 700px;
+    height: 220px;
+    background: white;
+    border: 2px solid black;
+    border-radius: 6px;
+    touch-action: none;
+    cursor: crosshair;
+}
+
+.saved-submission-signature {
+    display: block;
+    max-width: 700px;
+    width: 100%;
+    height: auto;
+    background: white;
+    border: 2px solid black;
+    margin: 15px 0;
+}
+
+.submission-card,
+.submission-history-card {
+    margin-bottom: 20px;
+}
+
+
+/* ============================================================
+   PORTAL-STYLE REDESIGN — original app logic and sections kept
+   ============================================================ */
+:root{--app-bg:#f3f6fb;--panel:#fff;--ink:#172235;--muted:#69778c;--line:#e2e8f1;--blue:#3157d5;--blue-soft:#edf1ff;--purple:#7658e8;--shadow:0 10px 28px rgba(25,42,75,.06)}
+html{scroll-behavior:smooth;scroll-padding-top:20px}
+body{margin:0;background:var(--app-bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.5}
+*{box-sizing:border-box}
+button,input,select,textarea{font:inherit}
+button{touch-action:manipulation}
+:focus-visible{outline:3px solid #7d9cff!important;outline-offset:3px!important}
+.skip-link{position:fixed;top:10px;left:10px;z-index:99999;padding:10px 14px;background:#fff;color:#182230;border-radius:9px;transform:translateY(-160%);box-shadow:var(--shadow)}
+.skip-link:focus{transform:translateY(0)}
+.app-shell{min-height:100vh;display:grid;grid-template-columns:258px minmax(0,1fr)}
+.sidebar{background:#111b2d;color:#e9eef8;padding:22px 14px 16px;min-height:100vh;display:flex;flex-direction:column;gap:16px;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:30}
+.brand-lockup{display:flex;align-items:center;gap:11px;padding:5px 8px 18px;border-bottom:1px solid #2a3549;margin-bottom:2px}
+.brand-mark{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(135deg,#667cff,#7954e8);color:#fff;font-weight:900;font-size:21px;box-shadow:0 7px 20px #5868d844;flex:none}
+.brand-name{font-size:15px;font-weight:850;letter-spacing:-.2px;color:#fff}.brand-sub{font-size:9px;color:#9eabc1;letter-spacing:1.1px;margin-top:3px}
+.nav-label{font-size:10px;letter-spacing:1.5px;font-weight:850;color:#8493ad;padding:0 12px;margin:2px 0 -8px}.nav-label-spaced{margin-top:8px}
+nav{display:grid;gap:4px;background:transparent;border:0;padding:0;justify-content:stretch;flex-wrap:nowrap}
+nav button{width:100%;display:flex;align-items:center;gap:11px;text-align:left;background:transparent;border:1px solid transparent;color:#b9c5d9;font-size:11px;font-weight:750;letter-spacing:.2px;min-height:42px;padding:10px 11px;border-radius:10px;cursor:pointer;white-space:normal}
+nav button .nav-icon{width:20px;flex:none;text-align:center;font-size:16px;color:#aab9d6}
+nav button:hover{background:#ffffff0d;color:#fff;border-color:#ffffff0a}
+nav button.active-nav{background:#29385b;color:#fff;border-color:#35466d;box-shadow:inset 3px 0 #8392ff}
+nav button.active-nav .nav-icon{color:#aab6ff}
+.sidebar-status{margin-top:auto;border:1px solid #2b374b;background:#18253a;padding:13px;border-radius:13px;font-size:11px}.sidebar-status p{color:#a8b5ca;font-size:10px;line-height:1.5;margin:7px 0 0}.status-dot{display:inline-block;width:7px;height:7px;background:#46d39a;border-radius:50%;margin-right:7px}
+.main-area{min-width:0}.topbar{min-height:76px;background:var(--panel);color:var(--ink);padding:14px clamp(16px,3vw,36px);display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line);text-align:left;position:sticky;top:0;z-index:20;box-shadow:0 2px 10px #1b2b4305}
+.topbar-left{display:flex;align-items:center;gap:13px}.topbar-kicker{font-size:9px;letter-spacing:1.5px;color:var(--muted);font-weight:850}.topbar h1{font-size:19px;line-height:1.3;margin:2px 0 0;letter-spacing:-.5px;color:var(--ink)}.topbar-right{display:flex;align-items:center;gap:10px}.mode-pill{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:6px 11px;border-radius:9px;background:var(--blue-soft);color:var(--blue);font-size:10px;letter-spacing:.5px;font-weight:900}.profile-mark{width:34px;height:34px;border-radius:11px;background:#e8edff;color:var(--blue);display:grid;place-items:center;font-size:10px;font-weight:900}.menu-toggle{display:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;min-width:40px;min-height:40px;font-size:18px}
+.content-area{padding:clamp(16px,3vw,34px);min-width:0;max-width:1700px;width:100%;margin:0 auto}.section{display:none;padding:0;max-width:none;margin:0;width:100%}.section.active{display:block;animation:sectionIn .18s ease-out}.section-title{color:var(--ink);font-weight:850;font-size:clamp(21px,2vw,28px);letter-spacing:-.6px;border:0;padding:0 0 15px;margin:0 0 20px;border-bottom:1px solid var(--line)}
+.dashboard-grid{gap:15px;margin-bottom:18px}.dashboard-card,.schedule-tool-box,.saved-item,.change-request-card,.submission-card,.paper-card,.rules-box,.tracker-box,.agreement-card{background:var(--panel);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow);padding:19px;margin-bottom:16px;color:var(--ink)}.dashboard-card h3,.schedule-tool-box h3{font-size:11px;letter-spacing:1px;color:var(--muted);margin:0 0 10px}.dashboard-value{font-size:clamp(25px,3vw,34px);font-weight:900;letter-spacing:-1px;color:var(--ink)}
+.controls{gap:10px;margin-bottom:18px}.controls label,label{font-size:12px;font-weight:800;color:var(--ink)}select,input,textarea{font-family:inherit;max-width:100%;border:1px solid #d6deea;border-radius:10px;background:#fff;color:#172235;padding:11px 12px;font-size:14px;min-height:44px}select{min-width:135px;font-weight:650;cursor:pointer}input{font-weight:500}textarea{line-height:1.6}input:disabled,select:disabled,textarea:disabled{background:#f0f3f8;color:#657186;cursor:not-allowed}
+.action-button,button.action-button,.login-box button{min-height:43px;padding:10px 15px;font-size:12px;font-weight:800;letter-spacing:.1px;border:1px solid #d6deea;background:#fff;color:var(--ink);border-radius:10px;cursor:pointer;transition:background .15s,border-color .15s,transform .15s}.action-button:hover,.login-box button:hover{background:#f3f6ff;border-color:#aab9ff;transform:translateY(-1px)}.blue-button{background:var(--blue)!important;border-color:var(--blue)!important;color:#fff!important}.blue-button:hover{background:#2448c3!important}.delete-button{border:1px solid #f1caca;background:#fff4f4;color:#b42318;border-radius:9px;padding:8px 11px;font-size:11px;font-weight:850;min-height:36px;cursor:pointer}.request-status{font-size:12px;color:var(--muted);margin-top:8px}
+.calendar-wrapper{width:100%;overflow-x:auto;border-radius:12px}.calendar-grid{grid-template-columns:repeat(7,minmax(115px,1fr));gap:7px;min-width:850px}.day-header{background:#17243a;color:#fff;border-radius:8px;padding:10px;font-size:11px}.calendar-day{border:1px solid var(--line);border-radius:10px;min-height:132px;padding:9px;background:var(--panel)}.calendar-day.invalid{background:#f0f3f8}.day-number{font-size:16px;font-weight:850}.calendar-day select{min-width:0;width:100%;font-size:11px;padding:7px;margin-top:8px;min-height:38px}.section p{line-height:1.6}.saved-item h3{margin-top:0;color:var(--ink)}
+.login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:10000;background:radial-gradient(ellipse at 15% 15%,#293b63 0,transparent 42%),radial-gradient(ellipse at 90% 85%,#34316b 0,transparent 38%),linear-gradient(135deg,#0d1728,#172641 58%,#24264b);padding:22px}.login-box{position:relative;overflow:hidden;width:min(100%,430px);padding:36px;background:#fff;color:#172235;border:1px solid #ffffff80;border-radius:22px;box-shadow:0 30px 100px #050b18a8}.login-box:before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#5477ff,#8c6bff)}.login-brand-mark{width:48px;height:48px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,#526eff,#8058e8);color:#fff;font-weight:900;font-size:23px;box-shadow:0 8px 20px #526eff35;margin-bottom:22px}.login-kicker{font-size:10px;font-weight:900;letter-spacing:1.8px;color:#5267c8}.login-box h1{font-size:29px;color:#172235;letter-spacing:-.8px;margin:7px 0 8px}.login-box p{font-size:13px;color:#667085}.login-box .login-intro{line-height:1.7;margin:0}.login-divider{height:1px;background:#e7ebf3;margin:25px 0 19px}.login-label{display:block;font-size:10px!important;letter-spacing:1px;font-weight:900!important;color:#34435b!important}.login-box input{width:100%;margin:9px 0 14px;min-height:49px;border:1px solid #cfd8e8;border-radius:11px;background:#f9fbff}.login-box button{width:100%;min-height:48px;background:var(--blue);border-color:var(--blue);color:#fff;letter-spacing:.7px}.login-box button:hover{background:#2448c3;color:#fff}.login-footnote{text-align:center;color:#8993a5;font-size:10px;letter-spacing:.4px;margin-top:17px}.login-box #loginMessage{font-size:12px;color:#b42318;margin-top:10px}
+.hidden-for-view{display:none!important}.section .section-title+.dashboard-grid{margin-top:0} .section button:disabled{opacity:.55;cursor:not-allowed;transform:none}
+@keyframes sectionIn{from{opacity:.6;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:1050px){.app-shell{grid-template-columns:230px minmax(0,1fr)}.sidebar{padding-left:10px;padding-right:10px}.content-area{padding:22px}.dashboard-grid{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}}
+@media(max-width:760px){.app-shell{display:block}.sidebar{position:fixed;top:0;bottom:0;left:0;height:100dvh;width:min(290px,86vw);transform:translateX(-105%);transition:transform .2s ease;box-shadow:0 0 0 100vw #0b12204d;visibility:hidden}.sidebar.open{transform:translateX(0);visibility:visible}.menu-toggle{display:inline-grid;place-items:center}.topbar{min-height:68px;padding:12px 14px}.topbar h1{font-size:17px}.topbar-kicker{font-size:8px}.content-area{padding:18px 13px 32px}.section-title{font-size:22px}.dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.dashboard-card,.schedule-tool-box,.saved-item,.change-request-card,.submission-card,.paper-card,.rules-box,.tracker-box,.agreement-card{padding:14px;border-radius:12px}.dashboard-value{font-size:25px}.controls{align-items:stretch}.controls>*{max-width:100%}.calendar-grid{min-width:800px}.mode-pill{font-size:9px;padding:5px 8px}.profile-mark{display:none}}
+@media(max-width:430px){.dashboard-grid{grid-template-columns:1fr}.topbar-right{gap:5px}.mode-pill{max-width:104px;white-space:normal;text-align:center}.content-area{padding:15px 10px 28px}.action-button{width:auto;max-width:100%}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+</style>
+</head>
+
+<body>
+
+<div class="login-screen" id="loginScreen">
+    <div class="login-box">
+        <div class="login-brand-mark" aria-hidden="true">S</div>
+        <div class="login-kicker">SHARED FAMILY WORKSPACE</div>
+        <h1>Shower Schedule</h1>
+        <p class="login-intro">A clear place for the schedule, sign-offs, points, and saved records.</p>
+        <div class="login-divider"></div>
+        <label class="login-label" for="passwordInput">ACCESS PASSCODE</label>
+
+        <input
+            type="password"
+            id="passwordInput"
+            placeholder="Enter your passcode"
+            autocomplete="current-password"
+            aria-describedby="loginMessage"
+            onkeydown="if(event.key==='Enter') login()"
+        >
+
+        <button onclick="login()">UNLOCK WORKSPACE</button>
+        <div class="login-footnote">Authorized access only</div>
+
+        <div id="loginMessage"></div>
+    </div>
+</div>
+
+<a class="skip-link" href="#mainContent">Skip to main content</a>
+<div class="app-shell" id="appShell">
+  <aside class="sidebar" id="sidebar" aria-label="Shower Schedule sidebar">
+    <div class="brand-lockup">
+      <div class="brand-mark" aria-hidden="true">S</div>
+      <div><div class="brand-name">Shower Schedule</div><div class="brand-sub">SHARED FAMILY WORKSPACE</div></div>
+    </div>
+    <div class="nav-label">WORKSPACE</div>
+    <nav aria-label="Main navigation">
+      <button onclick="showSection('dashboard')"><span class="nav-icon">▦</span><span>MAIN DASHBOARD</span></button>
+      <button onclick="showSection('calendar')" id="navCalendar"><span class="nav-icon">▦</span><span>CALENDAR</span></button>
+      <button onclick="showSection('tracker')" id="navTracker"><span class="nav-icon">✓</span><span>SIGNING TRACKER</span></button>
+      <button onclick="showSection('paper')" id="navPaper"><span class="nav-icon">▤</span><span>DAILY PAPER</span></button>
+      <button onclick="showSection('saved')"><span class="nav-icon">▣</span><span>SAVED DATA</span></button>
+      <button onclick="showSection('points')"><span class="nav-icon">★</span><span>ANGELO'S POINTS</span></button>
+    </nav>
+    <div class="nav-label nav-label-spaced">TOOLS & RECORDS</div>
+    <nav aria-label="Tools and records">
+      <button onclick="showSection('scheduleTool')"><span class="nav-icon">⌘</span><span>SCHEDULE TOOL</span></button>
+      <button onclick="showSection('agreements')"><span class="nav-icon">☷</span><span>AGREEMENTS</span></button>
+      <button onclick="showSection('countdowns')"><span class="nav-icon">◷</span><span>COUNTDOWNS</span></button>
+      <button onclick="showSection('fairness')"><span class="nav-icon">◇</span><span>FAIRNESS CHECKER</span></button>
+      <button id="navChangeRequests" onclick="showSection('changeRequests')"><span class="nav-icon">↔</span><span>CHANGE REQUESTS</span></button>
+      <button id="navSubmissions" onclick="showSection('submissions')"><span class="nav-icon">⇧</span><span>SUBMISSIONS</span></button>
+      <button onclick="showSection('changeLog')"><span class="nav-icon">↻</span><span>CHANGE LOG</span></button>
+      <button id="navViolations" onclick="showSection('violations')"><span class="nav-icon">!</span><span>SYSTEM VIOLATIONS</span></button>
+      <button id="navSettings" onclick="showSection('settings')"><span class="nav-icon">⚙</span><span>SETTINGS</span></button>
+    </nav>
+    <div class="sidebar-status"><span class="status-dot"></span><strong id="sidebarStatusText">Workspace ready</strong><p>Changes and records stay organized here.</p></div>
+  </aside>
+  <div class="main-area">
+    <header class="topbar">
+      <div class="topbar-left"><button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button><div><div class="topbar-kicker">SHARED WORKSPACE</div><h1>Shower Schedule</h1></div></div>
+      <div class="topbar-right"><span class="mode-pill" id="modeText">Loading...</span><span class="profile-mark" aria-hidden="true">SS</span></div>
+    </header>
+    <main id="mainContent" class="content-area">
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="section">
+    <div class="section-title">MAIN DASHBOARD</div>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card">
+            <h3>TODAY</h3>
+            <div class="dashboard-value" id="dashboardToday">-</div>
+            <p id="dashboardTodayDate">-</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>TOMORROW</h3>
+            <div class="dashboard-value" id="dashboardNextPerson">-</div>
+            <p id="dashboardNextDate">-</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>ANGELO'S POINTS</h3>
+            <div class="dashboard-value" id="dashboardPoints">0</div>
+            <p>GOAL: 15 POINTS</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>REWARD HISTORY</h3>
+            <div class="dashboard-value" id="dashboardRewards">0</div>
+            <p>REWARDS SAVED</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>SAVED DAILY PAPERS</h3>
+            <div class="dashboard-value" id="dashboardPapers">0</div>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>SAVED MONTHS</h3>
+            <div class="dashboard-value" id="dashboardMonths">0</div>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>IMPORTANT RULES</h3>
+
+        <div class="rules-box">
+            <strong>• The shower schedule must always be followed.</strong><br><br>
+            <strong>• Whoever showers first must sign the paper.</strong><br><br>
+            <strong>• The schedule can only be changed if BOTH Matt and Angelo agree.</strong><br><br>
+            <strong>• Roblox rules apply to all people.</strong>
+        </div>
+
+        <button id="viewAgreementsButton" onclick="showSection('agreements')">
+            VIEW ALL AGREEMENTS
+        </button>
+    </div>
+
+    <div class="dashboard-card" id="viewRequestCard">
+        <h3>REQUEST A CHANGE</h3>
+
+        <p>
+            View Mode cannot change the schedule or saved information.
+            You can send a request to the person using Edit Mode.
+        </p>
+
+        <button
+            class="action-button blue-button"
+            onclick="openChangeRequestForm()"
+        >
+            REQUEST A CHANGE
+        </button>
+
+        <div id="requestStatus" class="request-status"></div>
+    </div>
+
+    <div class="dashboard-card" id="myRequestStatusCard">
+        <h3>MY CHANGE REQUESTS</h3>
+        <div id="myRequestStatus">No requests yet.</div>
+    </div>
+</section>
+
+<!-- REQUEST MODAL -->
+<div id="changeRequestModal" class="request-modal" style="display:none;">
+    <div class="request-modal-box">
+
+        <div class="section-title">REQUEST A CHANGE</div>
+
+        <div class="paper-row">
+            <label for="requestName">YOUR NAME</label>
+            <input type="text" id="requestName" placeholder="Matt or Angelo">
+        </div>
+
+        <div class="paper-row">
+            <label for="requestChange">WHAT WOULD YOU LIKE CHANGED?</label>
+            <textarea
+                id="requestChange"
+                rows="5"
+                placeholder="Explain what you want changed."
+            ></textarea>
+        </div>
+
+        <div class="paper-row">
+            <label for="requestReason">WHY?</label>
+            <textarea
+                id="requestReason"
+                rows="4"
+                placeholder="Explain why you are requesting the change."
+            ></textarea>
+        </div>
+
+        <div class="controls">
+            <button
+                class="action-button blue-button"
+                onclick="submitChangeRequest()"
+            >
+                SUBMIT REQUEST
+            </button>
+
+            <button
+                class="action-button"
+                onclick="closeChangeRequestForm()"
+            >
+                CANCEL
+            </button>
+        </div>
+
+        <div id="requestFormMessage"></div>
+    </div>
+</div>
+
+<!-- CHANGE REQUESTS -->
+<section id="changeRequests" class="section">
+
+    <div class="section-title">CHANGE REQUESTS</div>
+
+    <div class="schedule-tool-box">
+        <p>
+            Requests submitted from View Mode appear here.
+            You decide whether each request is approved or denied.
+        </p>
+
+        <div
+            id="changeRequestConnection"
+            class="request-status"
+        >
+            CONNECTING...
+        </div>
+    </div>
+
+    <div id="changeRequestsContainer">
+        <p>Loading change requests...</p>
+    </div>
+
+</section>
+
+
+<!-- SUBMISSIONS -->
+<section id="submissions" class="section">
+
+    <div class="section-title">SUBMISSIONS</div>
+
+    <div id="submissionAssignmentBox" class="schedule-tool-box">
+
+        <div class="paper-row">
+            <label for="submissionDate">DATE</label>
+            <input type="date" id="submissionDate" onchange="updateSubmissionAssignment()">
+        </div>
+
+        <div id="submissionScheduleResult" class="schedule-result">
+            Choose a date to see who is scheduled.
+        </div>
+
+        <div class="paper-row">
+            <label for="submissionTitle">ASSIGNMENT</label>
+            <input type="text" id="submissionTitle" placeholder="Daily Shower Submission">
+        </div>
+
+        <div class="paper-row">
+            <label for="submissionInstructions">INSTRUCTIONS</label>
+            <textarea id="submissionInstructions" rows="5" placeholder="Enter what the person needs to submit."></textarea>
+        </div>
+
+        <div class="controls">
+            <button id="assignSubmissionButton" class="action-button blue-button" onclick="assignSubmission()">
+                ASSIGN SUBMISSION
+            </button>
+            <button class="action-button" onclick="newSubmissionAssignment()">
+                NEW ASSIGNMENT
+            </button>
+        </div>
+
+        <div id="submissionAssignmentMessage" class="request-status"></div>
+    </div>
+
+    <div id="submissionViewBox" class="schedule-tool-box">
+
+        <div class="section-title">SUBMISSION</div>
+
+        <div id="activeSubmissionContainer">
+            <p>No submission is currently assigned.</p>
+        </div>
+
+    </div>
+
+    <div id="submissionHistoryBox" class="schedule-tool-box">
+        <div class="section-title">SUBMISSION HISTORY</div>
+        <div id="submissionHistoryContainer">
+            <p>No submissions yet.</p>
+        </div>
+    </div>
+
+</section>
+
+<!-- SYSTEM VIOLATIONS -->
+<section id="violations" class="section">
+
+    <div class="section-title">SYSTEM VIOLATIONS</div>
+
+    <div class="schedule-tool-box">
+        <p><strong>EDIT MODE ONLY</strong></p>
+        <p>Record a situation where the shower schedule or agreement was not followed.</p>
+
+        <div class="paper-row">
+            <label for="violationDate">DATE</label>
+            <input type="date" id="violationDate">
+        </div>
+
+        <div class="paper-row">
+            <label for="violationType">VIOLATION</label>
+            <select id="violationType">
+                <option value="">Choose a violation</option>
+                <option value="Showered out of scheduled order">Showered out of scheduled order</option>
+                <option value="Did not follow the agreed schedule">Did not follow the agreed schedule</option>
+                <option value="Did not sign the required paper">Did not sign the required paper</option>
+                <option value="Changed the schedule without agreement">Changed the schedule without agreement</option>
+                <option value="Attempted to bypass the system">Attempted to bypass the system</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <div class="paper-row">
+            <label for="violationRule">RULE BROKEN</label>
+            <select id="violationRule">
+                <option value="">Choose a rule</option>
+                <option value="Rule I">Rule I — Showering earlier or later does not change the schedule</option>
+                <option value="Rule II">Rule II — Showering early does not give the next shower day</option>
+                <option value="Rule III">Rule III — The next person follows the schedule exactly</option>
+                <option value="Rule IV">Rule IV — Changes require both Matt and Angelo to agree</option>
+                <option value="Rule V">Rule V — Whoever showers first must sign the paper</option>
+                <option value="Other">Other / not listed</option>
+            </select>
+        </div>
+
+        <div class="paper-row">
+            <label for="violationNotes">NOTES</label>
+            <textarea id="violationNotes" rows="5" placeholder="Describe what happened."></textarea>
+        </div>
+
+        <div class="controls">
+            <button class="action-button blue-button" onclick="saveViolation()">SAVE VIOLATION</button>
+            <button class="action-button" onclick="newViolation()">NEW VIOLATION</button>
+        </div>
+
+        <div id="violationMessage" class="request-status"></div>
+    </div>
+
+    <div class="schedule-tool-box">
+        <div class="section-title">VIOLATION HISTORY</div>
+        <div id="violationsContainer"><p>No violations recorded.</p></div>
+    </div>
+
+</section>
+
+<!-- SCHEDULE TOOL -->
+<section id="scheduleTool" class="section">
+
+    <div class="section-title">SCHEDULE TOOL</div>
+
+    <div class="schedule-tool-box">
+
+        <div class="paper-row">
+            <label for="scheduleToolDate">DATE</label>
+            <input
+                type="date"
+                id="scheduleToolDate"
+                onchange="updateScheduleTool()"
+            >
+        </div>
+
+        <div
+            class="schedule-result"
+            id="scheduleToolResult"
+        >
+            Choose a date to see the scheduled person.
+        </div>
+
+    </div>
+
+</section>
+
+<!-- COUNTDOWNS -->
+<section id="countdowns" class="section">
+
+    <div class="section-title">COUNTDOWNS</div>
+
+    <div class="schedule-tool-box">
+
+        <div class="paper-row">
+            <label for="countdownName">NAME</label>
+            <input
+                type="text"
+                id="countdownName"
+                placeholder="Example: Christmas"
+            >
+        </div>
+
+        <div class="paper-row">
+            <label for="countdownDate">DATE</label>
+            <input
+                type="date"
+                id="countdownDate"
+                onchange="updateCountdownLive()"
+            >
+        </div>
+
+        <div class="paper-row">
+            <label for="countdownTime">TIME</label>
+            <input
+                type="time"
+                id="countdownTime"
+                value="00:00"
+                onchange="updateCountdownLive()"
+            >
+        </div>
+
+        <div class="controls">
+            <button
+                class="action-button blue-button"
+                onclick="saveCountdown()"
+            >
+                SAVE COUNTDOWN
+            </button>
+
+            <button
+                class="action-button"
+                onclick="newCountdown()"
+            >
+                NEW COUNTDOWN
+            </button>
+        </div>
+
+    </div>
+
+    <div class="dashboard-card">
+        <h3>COUNTDOWN</h3>
+        <div id="countdownLiveContent">
+            Choose a date and time.
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>SAVED COUNTDOWNS</h3>
+        <div id="savedCountdownsContainer">
+            <p>No countdowns saved yet.</p>
+        </div>
+    </div>
+
+</section>
+
+<!-- FAIRNESS -->
+<section id="fairness" class="section">
+
+    <div class="section-title">FAIRNESS CHECKER</div>
+
+    <div class="schedule-tool-box">
+        <p>
+            Checks saved calendar entries for repeated people
+            and missing days in the schedule.
+        </p>
+
+        <button
+            class="action-button blue-button"
+            onclick="runFairnessChecker()"
+        >
+            CHECK SCHEDULE
+        </button>
+    </div>
+
+    <div
+        id="fairnessResult"
+        class="fairness-result"
+    >
+        Press CHECK SCHEDULE to check the calendar.
+    </div>
+
+</section>
+
+<!-- CHANGE LOG -->
+<section id="changeLog" class="section">
+
+    <div class="section-title">CHANGE LOG</div>
+
+    <div class="schedule-tool-box">
+
+        <p>
+            Important changes are recorded with the reason
+            entered for making the change.
+        </p>
+
+        <div class="controls">
+
+            <button
+                class="action-button blue-button"
+                onclick="addManualChangeLog()"
+            >
+                ADD LOG ENTRY
+            </button>
+
+            <button
+                class="action-button"
+                onclick="clearChangeLog()"
+            >
+                CLEAR CHANGE LOG
+            </button>
+
+        </div>
+
+    </div>
+
+    <div id="changeLogContainer">
+        <p>No changes recorded yet.</p>
+    </div>
+
+</section>
+
+<!-- AGREEMENTS -->
+<section id="agreements" class="section">
+
+    <div class="section-title">AGREEMENTS</div>
+
+    <div class="agreement-box">
+
+        <h3>SHOWER SCHEDULE AGREEMENT</h3>
+
+        <strong>Between: Matt and Angelo</strong>
+
+PURPOSE
+
+This agreement is made to keep the shower schedule clear, fair, and consistent.
+
+AGREED RULE
+
+NO MATTER WHAT DAY IT IS, WHAT TIME SOMEONE SHOWERS, OR WHO SHOWERS FIRST, THE SHOWER SCHEDULE WILL STILL BE FOLLOWED.
+
+RULES
+
+I. Showering earlier or later does NOT change the schedule.
+II. If someone showers before their scheduled day, it does NOT automatically give them the next shower day.
+III. The next person follows the schedule exactly as written.
+IV. The schedule can only be changed if BOTH Matt and Angelo agree to the change.
+V. Who ever showers first any day has to sign the paper witch is given at the end of each shower.
+
+    </div>
+
+    <div class="agreement-box">
+
+        <h3>ROBLOX RULES AGREEMENT</h3>
+
+        <strong>Between: Matt and Angelo</strong>
+
+PURPOSE
+
+This agreement is made to make sure the rules are clear, fair, and apply equally to everyone when Roblox is being used.
+
+MAIN RULE
+
+WHENEVER ROBLOX IS BEING USED, THESE RULES APPLY TO ALL PEOPLE.
+
+RULES
+
+I. Whenever Roblox is being used, everyone must follow the agreed rules.
+II. No person gets a different set of rules just because they are the person playing.
+III. The rules apply to both Matt and Angelo equally.
+IV. The rules remain in effect for the entire time Roblox is being used.
+V. If a rule needs to be changed, both Matt and Angelo must agree to the change.
+VI. Neither person can change the rules by themselves.
+
+Matt's Signature: ______________________________
+Date: __________________
+
+Angelo's Signature: ____________________________
+Date: __________________
+
+    </div>
+
+</section>
+
+<!-- SETTINGS -->
+<section id="settings" class="section">
+
+    <div class="section-title">SETTINGS</div>
+
+    <div class="settings-box">
+
+        <div class="settings-row">
+            <strong>MODE</strong>
+            <p id="settingsMode">-</p>
+        </div>
+
+        <div class="settings-row">
+            <strong>DATA</strong>
+            <p>
+                Current website data is stored locally and synchronized
+                with the shared database when Edit Mode is used.
+            </p>
+        </div>
+
+        <div class="settings-row">
+
+            <strong>RESET OPTIONS</strong>
+
+            <div class="controls">
+
+                <button
+                    class="action-button"
+                    onclick="resetPoints()"
+                >
+                    RESET ANGELO'S POINTS
+                </button>
+
+                <button
+                    class="action-button"
+                    onclick="resetRewards()"
+                >
+                    CLEAR REWARD HISTORY
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="settings-row">
+            <strong>PRINT</strong>
+            <p>
+                Use your browser's print option to print the current page.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- POINTS -->
+<section id="points" class="section">
+
+    <div class="section-title">
+        ANGELO'S POINTS
+    </div>
+
+    <div class="points-box">
+
+        <div
+            class="points-number"
+            id="angeloPointsDisplay"
+        >
+            0 POINTS
+        </div>
+
+        <div class="points-goal">
+            GOAL: 15 POINTS
+        </div>
+
+        <div class="points-progress">
+            <div
+                id="angeloPointsProgress"
+                class="points-progress-fill"
+            ></div>
+        </div>
+
+        <div class="controls">
+
+            <button
+                id="addPointButton"
+                class="action-button blue-button"
+                onclick="addAngeloPoint()"
+            >
+                ADD 1 POINT
+            </button>
+
+            <button
+                id="removePointButton"
+                class="action-button"
+                onclick="removeAngeloPoint()"
+            >
+                REMOVE 1 POINT
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="section-title">
+        REWARD HISTORY
+    </div>
+
+    <div class="reward-history">
+
+        <div class="reward-form">
+
+            <div class="paper-row">
+                <label for="rewardDate">DATE</label>
+                <input type="date" id="rewardDate">
+            </div>
+
+            <div class="paper-row">
+                <label for="rewardName">REWARD</label>
+                <input
+                    type="text"
+                    id="rewardName"
+                    placeholder="Enter the reward"
+                >
+            </div>
+
+            <div class="paper-row">
+                <label for="rewardNotes">NOTES</label>
+                <textarea
+                    id="rewardNotes"
+                    placeholder="Optional notes..."
+                ></textarea>
+            </div>
+
+            <div class="controls">
+
+                <button
+                    id="saveRewardButton"
+                    class="action-button blue-button"
+                    onclick="saveReward()"
+                >
+                    SAVE REWARD
+                </button>
+
+                <button
+                    id="newRewardButton"
+                    class="action-button"
+                    onclick="newReward()"
+                >
+                    NEW REWARD
+                </button>
+
+            </div>
+
+        </div>
+
+        <div id="rewardHistoryContainer"></div>
+
+    </div>
+
+</section>
+
+<!-- TRACKER -->
+<section id="tracker" class="section">
+
+    <div class="section-title">
+        SIGNING TRACKER
+    </div>
+
+    <div class="controls">
+
+        <label for="trackerMonth">Month:</label>
+
+        <select
+            id="trackerMonth"
+            onchange="renderTracker()"
+        >
+            <option value="0">January</option>
+            <option value="1">February</option>
+            <option value="2">March</option>
+            <option value="3">April</option>
+            <option value="4">May</option>
+            <option value="5">June</option>
+            <option value="6">July</option>
+            <option value="7">August</option>
+            <option value="8" selected>September</option>
+            <option value="9">October</option>
+            <option value="10">November</option>
+            <option value="11">December</option>
+        </select>
+
+        <label for="trackerYear">Year:</label>
+
+        <select
+            id="trackerYear"
+            onchange="renderTracker()"
+        >
+            <option>2026</option>
+            <option>2027</option>
+            <option>2028</option>
+            <option>2029</option>
+            <option>2030</option>
+        </select>
+
+    </div>
+
+    <div id="trackerContainer"></div>
+
+    <div class="controls">
+
+        <button
+            class="action-button blue-button"
+            onclick="saveCurrentTracker()"
+        >
+            SAVE TRACKER
+        </button>
+
+    </div>
+
+</section>
+
+<!-- CONTRACT -->
+<section id="contract" class="section">
+
+    <div class="section-title">
+        RULES AND REGULATION
+    </div>
+
+    <div class="contract">
+
+        <h2>SHOWER SCHEDULE AGREEMENT</h2>
+
+        <p>
+            <strong>Between: Matt and Angelo</strong>
+        </p>
+
+        <h3>PURPOSE</h3>
+
+        <p>
+            This agreement is made to keep the shower schedule clear,
+            fair, and consistent.
+        </p>
+
+        <h3>AGREED RULE</h3>
+
+        <div class="agreed-rule">
+            NO MATTER WHAT DAY IT IS, WHAT TIME SOMEONE SHOWERS,
+            OR WHO SHOWERS FIRST, THE SHOWER SCHEDULE WILL STILL
+            BE FOLLOWED.
+        </div>
+
+        <h3>RULES</h3>
+
+        <p><strong>I.</strong>
+            Showering earlier or later does NOT change the schedule.
+        </p>
+
+        <p><strong>II.</strong>
+            If someone showers before their scheduled day,
+            it does NOT automatically give them the next shower day.
+        </p>
+
+        <p><strong>III.</strong>
+            The next person follows the schedule exactly as written.
+        </p>
+
+        <p><strong>IV.</strong>
+            The schedule can only be changed if BOTH Matt and Angelo
+            agree to the change.
+        </p>
+
+        <p><strong>V.</strong>
+            Who ever showers first any day has to sign the paper
+            witch is given at the end of each shower.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- CALENDAR -->
+<section id="calendar" class="section">
+
+    <div class="section-title">
+        CALENDAR
+    </div>
+
+    <div class="controls">
+
+        <label for="calendarYear">Year:</label>
+
+        <select
+            id="calendarYear"
+            onchange="renderCalendar()"
+        >
+            <option selected>2026</option>
+            <option>2027</option>
+            <option>2028</option>
+            <option>2029</option>
+            <option>2030</option>
+        </select>
+
+        <label for="calendarMonthInput">Month:</label>
+
+        <input
+            type="text"
+            id="calendarMonthInput"
+            list="calendarMonthSuggestions"
+            placeholder="Type 1-12 or January-December"
+            autocomplete="off"
+            oninput="renderCalendar()"
+            style="min-width:300px;min-height:52px;padding:8px 12px;font-size:18px;font-weight:bold;border:2px solid black;border-radius:6px;"
+        >
+
+        <datalist id="calendarMonthSuggestions">
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </datalist>
+
+        <button
+            class="action-button blue-button"
+            onclick="saveCurrentMonth()"
+        >
+            SAVE MONTH
+        </button>
+
+        <button
+            class="action-button"
+            onclick="exportCalendarPDF()"
+            title="Export the selected calendar month as a PDF"
+        >
+            ⇩ EXPORT PDF
+        </button>
+
+        <button
+            class="action-button"
+            onclick="resetCalendar()"
+        >
+            RESET CURRENT YEAR
+        </button>
+
+    </div>
+
+    <div id="calendarContainer"></div>
+
+</section>
+
+<!-- SAVED -->
+<section id="saved" class="section">
+
+    <div class="section-title">
+        SAVED DATA
+    </div>
+
+    <div class="view-notice" id="savedNotice">
+        Saved information is stored on this device.
+    </div>
+
+    <h2>Saved Months</h2>
+
+    <div id="savedMonthsContainer"></div>
+
+    <h2>Saved Signing Trackers</h2>
+
+    <div id="savedTrackersContainer"></div>
+
+    <h2>Saved Daily Papers</h2>
+
+    <div id="savedPapersContainer"></div>
+
+</section>
+
+<!-- DAILY PAPER -->
+<section id="paper" class="section">
+
+    <div class="section-title">
+        DAILY PAPER
+    </div>
+
+    <div class="paper">
+
+        <h2>DAILY SHOWER PAPER</h2>
+
+        <div class="paper-row">
+            <label for="paperDate">DATE</label>
+
+            <input
+                type="date"
+                id="paperDate"
+                style="height:52px;border:2px solid black;padding:8px;font-size:18px;"
+            >
+        </div>
+
+        <div class="paper-row">
+
+            <label for="firstShowerer">
+                WHO SHOWERED FIRST?
+            </label>
+
+            <select id="firstShowerer">
+
+                <option value="">Choose one</option>
+                <option value="Angelo">Angelo</option>
+                <option value="Matthew">Matthew</option>
+
+            </select>
+
+        </div>
+
+        <div class="paper-row">
+
+            <label for="paperStatus">
+                SIGNING STATUS
+            </label>
+
+            <select id="paperStatus">
+
+                <option value="">Choose one</option>
+                <option value="SIGNED">SIGNED</option>
+                <option value="MISSING">MISSING</option>
+
+            </select>
+
+        </div>
+
+        <div class="paper-row">
+
+            <label for="paperNotes">NOTES</label>
+
+            <textarea
+                id="paperNotes"
+                placeholder="Write notes here..."
+            ></textarea>
+
+        </div>
+
+        <div class="controls">
+
+            <button
+                class="action-button blue-button"
+                onclick="saveDailyPaper()"
+            >
+                SAVE
+            </button>
+
+            <button
+                class="action-button"
+                onclick="newDailyPaper()"
+            >
+                NEW COPY
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+    </main>
+  </div>
+</div>
+
+<script>
+
+/* ============================================================
+   PASSWORDS
+   ============================================================ */
+
+const MINE_PASSWORD = "1014131814";
+const VIEW_PASSWORD = "1814";
+
+
+/* ============================================================
+   FIREBASE REST DATABASE
+   ============================================================ */
+
+const SHARED_DATABASE_URL =
+    "https://shower-schedule-2-default-rtdb.firebaseio.com";
+
+const SHARED_REQUESTS_PATH = "changeRequests";
+const SHARED_APP_DATA_PATH = "appData";
+const SHARED_SUBMISSIONS_PATH = "submissions";
+
+let editMode = false;
+
+let sharedRequests = [];
+
+let requestSyncTimer = null;
+let sharedAppSyncTimer = null;
+let sharedAppSaveTimer = null;
+let sharedAppHash = "";
+
+let countdownTimer = null;
+let submissions = JSON.parse(localStorage.getItem("showerSubmissions")) || [];
+if (!Array.isArray(submissions)) submissions = [];
+
+
+/* ============================================================
+   LOCAL DATA
+   ============================================================ */
+
+let calendarData =
+    JSON.parse(localStorage.getItem("showerCalendarData")) || {};
+
+let trackerData =
+    JSON.parse(localStorage.getItem("showerTrackerData")) || {};
+
+let savedPapers =
+    JSON.parse(localStorage.getItem("showerSavedPapers")) || [];
+
+let savedMonths =
+    JSON.parse(localStorage.getItem("showerSavedMonths")) || [];
+
+let savedTrackers =
+    JSON.parse(localStorage.getItem("showerSavedTrackers")) || [];
+
+let angeloPoints =
+    Number(localStorage.getItem("angeloPoints")) || 0;
+
+let rewardHistory =
+    JSON.parse(localStorage.getItem("angeloRewardHistory")) || [];
+
+let changeLog =
+    JSON.parse(localStorage.getItem("showerChangeLog")) || [];
+
+let countdowns =
+    JSON.parse(localStorage.getItem("showerCountdowns")) || [];
+
+let violations =
+    JSON.parse(localStorage.getItem("showerViolations")) || [];
+
+
+if (!Array.isArray(savedPapers)) savedPapers = [];
+if (!Array.isArray(savedMonths)) savedMonths = [];
+if (!Array.isArray(savedTrackers)) savedTrackers = [];
+if (!Array.isArray(rewardHistory)) rewardHistory = [];
+if (!Array.isArray(changeLog)) changeLog = [];
+if (!Array.isArray(countdowns)) countdowns = [];
+if (!Array.isArray(violations)) violations = [];
+
+
+/* ============================================================
+   SHARED DATABASE HELPERS
+   ============================================================ */
+
+function sharedDatabaseUrl(path) {
+
+    return SHARED_DATABASE_URL.replace(/\/$/, "") +
+        "/" +
+        path +
+        ".json";
+}
+
+
+/* ============================================================
+   SHARED APP DATA
+   ============================================================ */
+
+function getSharedAppData() {
+
+    return {
+        calendarData: calendarData,
+        trackerData: trackerData,
+        savedPapers: savedPapers,
+        savedMonths: savedMonths,
+        savedTrackers: savedTrackers,
+        angeloPoints: angeloPoints,
+        rewardHistory: rewardHistory,
+        changeLog: changeLog,
+        countdowns: countdowns,
+        submissions: submissions,
+        violations: violations
+    };
+}
+
+
+function applySharedAppData(data) {
+
+    if (!data || typeof data !== "object") {
+        return;
+    }
+
+    calendarData =
+        data.calendarData &&
+        typeof data.calendarData === "object"
+            ? data.calendarData
+            : {};
+
+    trackerData =
+        data.trackerData &&
+        typeof data.trackerData === "object"
+            ? data.trackerData
+            : {};
+
+    savedPapers =
+        Array.isArray(data.savedPapers)
+            ? data.savedPapers
+            : [];
+
+    savedMonths =
+        Array.isArray(data.savedMonths)
+            ? data.savedMonths
+            : [];
+
+    savedTrackers =
+        Array.isArray(data.savedTrackers)
+            ? data.savedTrackers
+            : [];
+
+    angeloPoints =
+        Number.isFinite(Number(data.angeloPoints))
+            ? Number(data.angeloPoints)
+            : 0;
+
+    rewardHistory =
+        Array.isArray(data.rewardHistory)
+            ? data.rewardHistory
+            : [];
+
+    changeLog =
+        Array.isArray(data.changeLog)
+            ? data.changeLog
+            : [];
+
+    countdowns =
+        Array.isArray(data.countdowns)
+            ? data.countdowns
+            : [];
+
+    submissions =
+        Array.isArray(data.submissions)
+            ? data.submissions
+            : submissions;
+
+    localStorage.setItem(
+        "showerSubmissions",
+        JSON.stringify(submissions)
+    );
+
+
+    localStorage.setItem(
+        "showerCalendarData",
+        JSON.stringify(calendarData)
+    );
+
+    localStorage.setItem(
+        "showerTrackerData",
+        JSON.stringify(trackerData)
+    );
+
+    localStorage.setItem(
+        "showerSavedPapers",
+        JSON.stringify(savedPapers)
+    );
+
+    localStorage.setItem(
+        "showerSavedMonths",
+        JSON.stringify(savedMonths)
+    );
+
+    localStorage.setItem(
+        "showerSavedTrackers",
+        JSON.stringify(savedTrackers)
+    );
+
+    localStorage.setItem(
+        "angeloPoints",
+        String(angeloPoints)
+    );
+
+    localStorage.setItem(
+        "angeloRewardHistory",
+        JSON.stringify(rewardHistory)
+    );
+
+    localStorage.setItem(
+        "showerChangeLog",
+        JSON.stringify(changeLog)
+    );
+
+    localStorage.setItem(
+        "showerCountdowns",
+        JSON.stringify(countdowns)
+    );
+
+    violations =
+        Array.isArray(data.violations)
+            ? data.violations
+            : [];
+
+    localStorage.setItem(
+        "showerViolations",
+        JSON.stringify(violations)
+    );
+
+    sharedAppHash =
+        JSON.stringify(getSharedAppData());
+
+    renderAllData();
+}
+
+
+async function loadSharedAppData() {
+
+    try {
+
+        const response =
+            await fetch(
+                sharedDatabaseUrl(SHARED_APP_DATA_PATH),
+                {
+                    cache:"no-store"
+                }
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                "Shared app data request failed: " +
+                response.status
+            );
+        }
+
+        const data =
+            await response.json();
+
+        if (data && typeof data === "object") {
+
+            applySharedAppData(data);
+
+            try {
+                const submissionResponse = await fetch(
+                    sharedDatabaseUrl(SHARED_SUBMISSIONS_PATH),
+                    {cache:"no-store"}
+                );
+                if (submissionResponse.ok) {
+                    const sharedSubmissions = await submissionResponse.json();
+                    if (Array.isArray(sharedSubmissions)) {
+                        submissions = sharedSubmissions;
+                        localStorage.setItem("showerSubmissions", JSON.stringify(submissions));
+                    }
+                }
+            } catch(error) {
+                console.error("Shared submissions load error:", error);
+            }
+
+            return true;
+        }
+
+        return false;
+
+    } catch(error) {
+
+        console.error(
+            "Shared app data error:",
+            error
+        );
+
+        return false;
+    }
+}
+
+
+async function saveSharedAppData() {
+
+    if (!editMode) {
+        return;
+    }
+
+    const payload =
+        getSharedAppData();
+
+    const hash =
+        JSON.stringify(payload);
+
+    if (hash === sharedAppHash) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(
+                sharedDatabaseUrl(SHARED_APP_DATA_PATH),
+                {
+                    method:"PUT",
+                    headers:{
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body:
+                        JSON.stringify(payload)
+                }
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Shared app data write failed: " +
+                response.status
+            );
+        }
+
+        sharedAppHash = hash;
+
+        await fetch(
+            sharedDatabaseUrl(SHARED_SUBMISSIONS_PATH),
+            {
+                method:"PUT",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify(submissions)
+            }
+        );
+
+    } catch(error) {
+
+        console.error(
+            "Could not save shared app data:",
+            error
+        );
+    }
+}
+
+
+function scheduleSharedAppSave() {
+
+    if (!editMode) {
+        return;
+    }
+
+    clearTimeout(
+        sharedAppSaveTimer
+    );
+
+    sharedAppSaveTimer =
+        setTimeout(
+            function(){
+                saveSharedAppData();
+            },
+            250
+        );
+}
+
+
+function startSharedAppSync() {
+
+    clearInterval(
+        sharedAppSyncTimer
+    );
+
+    sharedAppSyncTimer =
+        setInterval(
+            async function(){
+
+                if (editMode) {
+
+                    await saveSharedAppData();
+
+                } else {
+
+                    await loadSharedAppData();
+
+                }
+
+            },
+            3000
+        );
+}
+
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+
+async function login() {
+
+    const password =
+        document.getElementById(
+            "passwordInput"
+        ).value;
+
+    const message =
+        document.getElementById(
+            "loginMessage"
+        );
+
+
+    if (password === MINE_PASSWORD) {
+
+        editMode = true;
+
+        document.getElementById(
+            "loginScreen"
+        ).style.display = "none";
+
+        document.getElementById(
+            "modeText"
+        ).textContent = "EDIT MODE";
+
+        setupEditMode();
+
+        const loaded =
+            await loadSharedAppData();
+
+        if (!loaded) {
+
+            sharedAppHash = "";
+
+            await saveSharedAppData();
+        }
+
+        initializePage();
+
+        startSharedRequestSync();
+
+        startSharedAppSync();
+
+        return;
+    }
+
+
+    if (password === VIEW_PASSWORD) {
+
+        editMode = false;
+
+        document.getElementById(
+            "loginScreen"
+        ).style.display = "none";
+
+        document.getElementById(
+            "modeText"
+        ).textContent = "VIEW ONLY";
+
+        setupViewMode();
+
+        await loadSharedAppData();
+
+        initializePage();
+
+        startSharedRequestSync();
+
+        startSharedAppSync();
+
+        return;
+    }
+
+
+    message.textContent =
+        "Incorrect password.";
+}
+
+
+/* ============================================================
+   EDIT MODE
+   ============================================================ */
+
+function setupEditMode() {
+
+    document.querySelectorAll(
+        "nav button"
+    ).forEach(
+        function(button){
+            button.style.display = "";
+        }
+    );
+
+
+    document.querySelectorAll(
+        ".section"
+    ).forEach(
+        function(section){
+
+            section.classList.remove(
+                "hidden-for-view"
+            );
+
+        }
+    );
+
+
+    document.querySelectorAll(
+        "select"
+    ).forEach(
+        function(select){
+            select.disabled = false;
+        }
+    );
+
+
+    document.querySelectorAll(
+        "input"
+    ).forEach(
+        function(input){
+
+            if (
+                input.id !==
+                "passwordInput"
+            ) {
+                input.disabled = false;
+            }
+
+        }
+    );
+
+
+    document.querySelectorAll(
+        "textarea"
+    ).forEach(
+        function(textarea){
+            textarea.disabled = false;
+        }
+    );
+
+
+    document.querySelectorAll(
+        ".action-button"
+    ).forEach(
+        function(button){
+            button.style.display = "";
+        }
+    );
+
+
+    const requestCard =
+        document.getElementById(
+            "viewRequestCard"
+        );
+
+    if (requestCard) {
+        requestCard.style.display = "none";
+    }
+
+
+    const agreementsButton =
+        document.getElementById(
+            "viewAgreementsButton"
+        );
+
+    if (agreementsButton) {
+        agreementsButton.style.display = "";
+    }
+}
+
+
+/* ============================================================
+   VIEW MODE
+   ============================================================ */
+
+function setupViewMode() {
+
+    document.querySelectorAll(
+        "nav button"
+    ).forEach(
+        function(button){
+            button.style.display = "none";
+        }
+    );
+
+
+    const dashboardButton =
+        document.querySelector(
+            'nav button[onclick="showSection(\'dashboard\')"]'
+        );
+
+    const submissionsButton =
+        document.getElementById("navSubmissions");
+
+    if (dashboardButton) {
+        dashboardButton.style.display = "";
+    }
+
+    if (submissionsButton) {
+        submissionsButton.style.display = "";
+    }
+
+
+    document.querySelectorAll(
+        ".section"
+    ).forEach(
+        function(section){
+
+            if (section.id !== "dashboard" && section.id !== "submissions") {
+
+                section.classList.remove(
+                    "active"
+                );
+
+                section.classList.add(
+                    "hidden-for-view"
+                );
+            }
+
+        }
+    );
+
+    const submissionSection = document.getElementById("submissions");
+    if (submissionSection) {
+        submissionSection.classList.remove("hidden-for-view");
+    }
+
+
+    document.querySelectorAll(
+        "select"
+    ).forEach(
+        function(select){
+            select.disabled = true;
+        }
+    );
+
+
+    document.querySelectorAll(
+        "input, textarea"
+    ).forEach(
+        function(input){
+
+            if (
+                input.id !== "passwordInput" &&
+                input.id !== "requestName" &&
+                input.id !== "requestChange" &&
+                input.id !== "requestReason"
+            ) {
+                input.disabled = true;
+            }
+
+        }
+    );
+
+
+    [
+        "requestName",
+        "requestChange",
+        "requestReason"
+    ].forEach(
+        function(id){
+
+            const field =
+                document.getElementById(id);
+
+            if (field) {
+                field.disabled = false;
+            }
+
+        }
+    );
+
+
+    document.querySelectorAll(
+        ".action-button, .delete-button"
+    ).forEach(
+        function(button){
+            button.style.display = "none";
+        }
+    );
+
+    ["submitSignatureButton", "clearSignatureButton"].forEach(function(id){
+        const button = document.getElementById(id);
+        if (button) button.style.display = "";
+    });
+
+    const requestCard =
+        document.getElementById(
+            "viewRequestCard"
+        );
+
+    if (requestCard) {
+
+        requestCard.style.display =
+            "block";
+
+        const requestButton =
+            requestCard.querySelector(
+                "button"
+            );
+
+        if (requestButton) {
+            requestButton.style.display = "";
+        }
+    }
+
+
+    document.querySelectorAll(
+        "#changeRequestModal .action-button"
+    ).forEach(
+        function(button){
+            button.style.display = "";
+        }
+    );
+
+
+    const agreementsButton =
+        document.getElementById(
+            "viewAgreementsButton"
+        );
+
+    if (agreementsButton) {
+        agreementsButton.style.display = "none";
+    }
+
+
+    const savedNotice =
+        document.getElementById(
+            "savedNotice"
+        );
+
+    if (savedNotice) {
+
+        savedNotice.textContent =
+            "VIEW ONLY MODE — saved information cannot be changed here. You can submit a change request.";
+    }
+}
+
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+
+function showSection(sectionId) {
+
+    if (
+        !editMode &&
+        sectionId !== "dashboard" &&
+        sectionId !== "submissions"
+    ) {
+        return;
+    }
+
+
+    document.querySelectorAll(
+        ".section"
+    ).forEach(
+        function(section){
+
+            section.classList.remove(
+                "active"
+            );
+
+        }
+    );
+
+
+    const section =
+        document.getElementById(
+            sectionId
+        );
+
+
+    if (!section) {
+        return;
+    }
+
+
+    section.classList.add(
+        "active"
+    );
+
+    document.querySelectorAll("nav button[onclick^=\"showSection\"]").forEach(function(button){
+        button.classList.remove("active-nav");
+        button.removeAttribute("aria-current");
+        const match = button.getAttribute("onclick").match(/showSection\('([^']+)'\)/);
+        if (match && match[1] === sectionId) {
+            button.classList.add("active-nav");
+            button.setAttribute("aria-current", "page");
+        }
+    });
+    const sidebar = document.getElementById("sidebar");
+    const menuToggle = document.getElementById("menuToggle");
+    if (sidebar) sidebar.classList.remove("open");
+    if (menuToggle) menuToggle.setAttribute("aria-expanded", "false");
+
+
+    if (sectionId === "calendar") {
+        renderCalendar();
+    }
+
+    if (sectionId === "tracker") {
+        renderTracker();
+    }
+
+    if (sectionId === "saved") {
+        renderSavedData();
+    }
+
+    if (sectionId === "dashboard") {
+        renderDashboard();
+    }
+
+    if (sectionId === "scheduleTool") {
+        updateScheduleTool();
+    }
+
+    if (sectionId === "settings") {
+        updateSettings();
+    }
+
+    if (sectionId === "changeLog") {
+        renderChangeLog();
+    }
+
+    if (sectionId === "countdowns") {
+        renderCountdowns();
+        startCountdownTimer();
+    }
+
+    if (sectionId === "fairness") {
+        runFairnessChecker();
+    }
+
+    if (sectionId === "submissions") {
+        renderSubmissions();
+        updateSubmissionAssignment();
+    }
+
+    if (sectionId === "violations") {
+        renderViolations();
+    }
+
+    if (sectionId === "changeRequests") {
+        loadSharedRequests();
+        renderChangeRequests();
+    renderSubmissions();
+    }
+}
+
+
+/* ============================================================
+   RENDER EVERYTHING
+   ============================================================ */
+
+function renderAllData() {
+
+    renderCalendar();
+    renderTracker();
+    renderSavedData();
+    renderAngeloPoints();
+    renderRewardHistory();
+    renderChangeLog();
+    renderCountdowns();
+    renderDashboard();
+    updateSettings();
+    runFairnessChecker();
+    renderChangeRequests();
+    renderSubmissions();
+}
+
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+
+function formatToolDate(value) {
+
+    if (!value) {
+        return "";
+    }
+
+    const parts =
+        value.split("-");
+
+    const d =
+        new Date(
+            Number(parts[0]),
+            Number(parts[1]) - 1,
+            Number(parts[2])
+        );
+
+    return d.toLocaleDateString(
+        undefined,
+        {
+            year:"numeric",
+            month:"long",
+            day:"numeric"
+        }
+    );
+}
+
+
+function getScheduledPerson(dateString) {
+
+    if (!dateString) {
+        return "NOT SET";
+    }
+
+    const parts =
+        dateString.split("-");
+
+    const year =
+        Number(parts[0]);
+
+    const month =
+        Number(parts[1]) - 1;
+
+    const day =
+        Number(parts[2]);
+
+    const key =
+        calendarKey(
+            year,
+            month,
+            day
+        );
+
+    return (
+        calendarData[key] ||
+        "NOT SET"
+    );
+}
+
+
+function setScheduleToolToday() {
+
+    const input =
+        document.getElementById(
+            "scheduleToolDate"
+        );
+
+    if (!input) {
+        return;
+    }
+
+    const today =
+        new Date();
+
+    input.value =
+        today.getFullYear() +
+        "-" +
+        String(
+            today.getMonth() + 1
+        ).padStart(2,"0") +
+        "-" +
+        String(
+            today.getDate()
+        ).padStart(2,"0");
+
+    updateScheduleTool();
+}
+
+
+function updateScheduleTool() {
+
+    const input =
+        document.getElementById(
+            "scheduleToolDate"
+        );
+
+    const result =
+        document.getElementById(
+            "scheduleToolResult"
+        );
+
+    if (!input || !result) {
+        return;
+    }
+
+    const person =
+        getScheduledPerson(
+            input.value
+        );
+
+    result.innerHTML =
+        "DATE: <strong>" +
+        formatToolDate(input.value) +
+        "</strong><br><br>" +
+        "SCHEDULED PERSON: <strong>" +
+        person +
+        "</strong>";
+}
+
+
+function renderDashboard() {
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    function makeDateKey(date) {
+        return date.getFullYear() + "-" +
+            String(date.getMonth() + 1).padStart(2, "0") + "-" +
+            String(date.getDate()).padStart(2, "0");
+    }
+
+    const todayValue = makeDateKey(today);
+    const tomorrowValue = makeDateKey(tomorrow);
+
+    const todayPerson = getScheduledPerson(todayValue);
+    const tomorrowPerson = getScheduledPerson(tomorrowValue);
+
+    const todayEl = document.getElementById("dashboardToday");
+    const todayDateEl = document.getElementById("dashboardTodayDate");
+    const pointsEl = document.getElementById("dashboardPoints");
+    const rewardsEl = document.getElementById("dashboardRewards");
+    const papersEl = document.getElementById("dashboardPapers");
+    const monthsEl = document.getElementById("dashboardMonths");
+    const nextPersonEl = document.getElementById("dashboardNextPerson");
+    const nextDateEl = document.getElementById("dashboardNextDate");
+
+    if (todayEl) {
+        todayEl.textContent = todayPerson;
+    }
+
+    if (todayDateEl) {
+        todayDateEl.textContent = formatToolDate(todayValue);
+    }
+
+    if (nextPersonEl) {
+        nextPersonEl.textContent = tomorrowPerson;
+    }
+
+    if (nextDateEl) {
+        nextDateEl.textContent = formatToolDate(tomorrowValue);
+    }
+
+    if (pointsEl) {
+        pointsEl.textContent = angeloPoints + " POINTS";
+    }
+
+    if (rewardsEl) {
+        rewardsEl.textContent = rewardHistory.length;
+    }
+
+    if (papersEl) {
+        papersEl.textContent = savedPapers.length;
+    }
+
+    if (monthsEl) {
+        monthsEl.textContent = savedMonths.length;
+    }
+}
+
+function updateSettings() {
+
+    const mode =
+        document.getElementById(
+            "settingsMode"
+        );
+
+    if (mode) {
+        mode.textContent =
+            editMode
+                ? "EDIT MODE"
+                : "VIEW ONLY";
+    }
+}
+
+
+/* ============================================================
+   CALENDAR
+   ============================================================ */
+
+function calendarKey(
+    year,
+    month,
+    day
+) {
+
+    return (
+        year +
+        "-" +
+        String(month + 1).padStart(2,"0") +
+        "-" +
+        String(day).padStart(2,"0")
+    );
+}
+
+
+function renderCalendar() {
+
+    const yearElement =
+        document.getElementById(
+            "calendarYear"
+        );
+
+    const container =
+        document.getElementById(
+            "calendarContainer"
+        );
+
+    if (!yearElement || !container) {
+        return;
+    }
+
+    const year =
+        Number(
+            yearElement.value
+        );
+
+    container.innerHTML = "";
+
+
+    const monthNames = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+    ];
+
+
+    const weekdays = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+    ];
+
+    const monthInput =
+        document.getElementById("calendarMonthInput");
+
+    const typedMonth =
+        monthInput ? monthInput.value.trim() : "";
+
+    let selectedMonth = null;
+
+    if (typedMonth) {
+        const lowerMonth = typedMonth.toLowerCase();
+        const numericMonth = Number(typedMonth);
+
+        if (Number.isInteger(numericMonth) && numericMonth >= 1 && numericMonth <= 12) {
+            selectedMonth = numericMonth - 1;
+        } else {
+            const exactMonth = monthNames.findIndex(function(name) {
+                return name.toLowerCase() === lowerMonth;
+            });
+
+            if (exactMonth !== -1) {
+                selectedMonth = exactMonth;
+            }
+        }
+    }
+
+    for (
+        let month = 0;
+        month < 12;
+        month++
+    ) {
+
+        if (selectedMonth !== null && month !== selectedMonth) {
+            continue;
+        }
+
+        const monthTitle =
+            document.createElement(
+                "div"
+            );
+
+        monthTitle.className =
+            "month-title";
+
+        monthTitle.textContent =
+            monthNames[month] +
+            " " +
+            year;
+
+        container.appendChild(
+            monthTitle
+        );
+
+
+        const wrapper =
+            document.createElement(
+                "div"
+            );
+
+        wrapper.className =
+            "calendar-wrapper";
+
+
+        const grid =
+            document.createElement(
+                "div"
+            );
+
+        grid.className =
+            "calendar-grid";
+
+
+        weekdays.forEach(
+            function(dayName){
+
+                const header =
+                    document.createElement(
+                        "div"
+                    );
+
+                header.className =
+                    "day-header";
+
+                header.textContent =
+                    dayName;
+
+                grid.appendChild(
+                    header
+                );
+            }
+        );
+
+
+        const firstDay =
+            new Date(
+                year,
+                month,
+                1
+            ).getDay();
+
+
+        const daysInMonth =
+            new Date(
+                year,
+                month + 1,
+                0
+            ).getDate();
+
+
+        for (
+            let i = 0;
+            i < firstDay;
+            i++
+        ) {
+
+            const empty =
+                document.createElement(
+                    "div"
+                );
+
+            empty.className =
+                "calendar-day invalid";
+
+            grid.appendChild(
+                empty
+            );
+        }
+
+
+        for (
+            let day = 1;
+            day <= 31;
+            day++
+        ) {
+
+            const cell =
+                document.createElement(
+                    "div"
+                );
+
+            cell.className =
+                "calendar-day";
+
+
+            if (
+                day > daysInMonth
+            ) {
+
+                cell.classList.add(
+                    "invalid"
+                );
+
+                grid.appendChild(
+                    cell
+                );
+
+                continue;
+            }
+
+
+            const number =
+                document.createElement(
+                    "div"
+                );
+
+            number.className =
+                "day-number";
+
+            number.textContent =
+                day;
+
+            cell.appendChild(
+                number
+            );
+
+
+            const select =
+                document.createElement(
+                    "select"
+                );
+
+
+            select.innerHTML = `
+                <option value="">Choose</option>
+                <option value="Angelo">Angelo</option>
+                <option value="Matthew">Matthew</option>
+            `;
+
+
+            const key =
+                calendarKey(
+                    year,
+                    month,
+                    day
+                );
+
+
+            select.value =
+                calendarData[key] ||
+                "";
+
+
+            select.onchange =
+                function(){
+
+                    if (!editMode) {
+                        return;
+                    }
+
+
+                    const previousValue =
+                        calendarData[key] ||
+                        "NOT SET";
+
+
+                    const newValue =
+                        select.value ||
+                        "NOT SET";
+
+
+                    let reason = "";
+
+                    // If the box was empty, choosing Angelo/Matthew is the initial entry.
+                    // Only ask for a reason when an existing named entry is being changed.
+                    if (calendarData[key]) {
+                        reason = prompt(
+                            "Why are you changing the schedule for " +
+                            key +
+                            "?"
+                        );
+
+                        if (reason === null || !reason.trim()) {
+                            select.value = calendarData[key] || "";
+                            return;
+                        }
+
+                        reason = reason.trim();
+                    }
+
+                    calendarData[key] =
+                        select.value;
+
+
+                    localStorage.setItem(
+                        "showerCalendarData",
+                        JSON.stringify(
+                            calendarData
+                        )
+                    );
+
+
+                    scheduleSharedAppSave();
+
+
+                    if (reason) {
+                        recordChange(
+                            "Calendar",
+                            key +
+                            ": " +
+                            previousValue +
+                            " → " +
+                            newValue,
+                            reason
+                        );
+                    }
+
+
+                    renderDashboard();
+                    runFairnessChecker();
+                };
+
+
+            cell.appendChild(
+                select
+            );
+
+            grid.appendChild(
+                cell
+            );
+        }
+
+
+        const totalCells =
+            firstDay + 31;
+
+        const remainder =
+            totalCells % 7;
+
+
+        if (
+            remainder !== 0
+        ) {
+
+            const extra =
+                7 - remainder;
+
+
+            for (
+                let i = 0;
+                i < extra;
+                i++
+            ) {
+
+                const empty =
+                    document.createElement(
+                        "div"
+                    );
+
+                empty.className =
+                    "calendar-day invalid";
+
+                grid.appendChild(
+                    empty
+                );
+            }
+        }
+
+
+        wrapper.appendChild(
+            grid
+        );
+
+        container.appendChild(
+            wrapper
+        );
+    }
+}
+
+
+function exportCalendarPDF() {
+    const yearElement = document.getElementById("calendarYear");
+    const monthElement = document.getElementById("calendarMonthInput");
+    const calendarContainer = document.getElementById("calendarContainer");
+
+    if (!yearElement || !monthElement || !calendarContainer) {
+        alert("The calendar could not be found. Please try again.");
+        return;
+    }
+
+    const year = Number(yearElement.value);
+    const typedMonth = monthElement.value.trim().toLowerCase();
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    let monthIndex = -1;
+    const numericMonth = Number(typedMonth);
+
+    if (typedMonth && Number.isInteger(numericMonth) && numericMonth >= 1 && numericMonth <= 12) {
+        monthIndex = numericMonth - 1;
+    } else {
+        monthIndex = monthNames.findIndex(name => name.toLowerCase() === typedMonth);
+    }
+
+    if (monthIndex < 0) {
+        alert("Choose a month first, then click EXPORT PDF.");
+        monthElement.focus();
+        return;
+    }
+
+    // Make sure the displayed calendar matches the selected month before exporting.
+    renderCalendar();
+    const sourceGrid = calendarContainer.querySelector(".calendar-grid");
+    if (!sourceGrid) {
+        alert("The selected month could not be displayed. Please check the month and try again.");
+        return;
+    }
+
+    const printGrid = sourceGrid.cloneNode(true);
+    printGrid.querySelectorAll("select").forEach(select => {
+        const label = document.createElement("div");
+        label.className = "assigned-person";
+        label.textContent = select.value || "Not assigned";
+        select.replaceWith(label);
+    });
+
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+        alert("Your browser blocked the export window. Allow pop-ups for this site and try again.");
+        return;
+    }
+
+    const title = monthNames[monthIndex] + " " + year + " Shower Schedule";
+    printWindow.document.open();
+    printWindow.document.write(`<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${title}</title><style>
+@page{size:landscape;margin:10mm}*{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;color:#172235;margin:0;padding:0}h1{font-size:22px;margin:0 0 5px;color:#17243a}p{font-size:10px;color:#667085;margin:0 0 16px}.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;min-width:0;width:100%}.day-header{background:#17243a;color:#fff;border-radius:5px;padding:8px 5px;font-size:10px;font-weight:bold;text-align:center}.calendar-day{border:1px solid #d6deea;border-radius:5px;min-height:72px;padding:6px;background:#fff;break-inside:avoid}.calendar-day.invalid{background:#f0f3f8}.day-number{font-size:13px;font-weight:bold;margin-bottom:8px}.assigned-person{font-size:10px;font-weight:bold;color:#2451c5;overflow-wrap:anywhere}.footer{margin-top:12px;font-size:9px;color:#667085}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style></head><body><h1>${title}</h1><p>Monthly calendar export · Print or choose “Save as PDF” in the print window.</p><main id="exportGrid"></main><div class="footer">Shower Schedule</div><script>window.onload=function(){window.focus();setTimeout(function(){window.print();},250);};window.onafterprint=function(){window.close();};<\/script></body></html>`);
+    printWindow.document.close();
+    const exportGrid = printWindow.document.getElementById("exportGrid");
+    exportGrid.appendChild(printWindow.document.importNode(printGrid, true));
+}
+
+function saveCurrentMonth() {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    const year =
+        Number(
+            document.getElementById(
+                "calendarYear"
+            ).value
+        );
+
+    const monthInput =
+        document.getElementById("calendarMonthInput");
+
+    const monthText =
+        monthInput ? monthInput.value.trim() : "";
+
+    if (!monthText) {
+        alert(
+            "Type a month number (1-12) or a month name first."
+        );
+        return;
+    }
+
+    const monthNames = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+    ];
+
+    const numericMonth = Number(monthText);
+    let monthNumber = null;
+
+    if (Number.isInteger(numericMonth) && numericMonth >= 1 && numericMonth <= 12) {
+        monthNumber = numericMonth - 1;
+    } else {
+        const exactMonth = monthNames.findIndex(function(name) {
+            return name.toLowerCase() === monthText.toLowerCase();
+        });
+
+        if (exactMonth !== -1) {
+            monthNumber = exactMonth;
+        }
+    }
+
+    if (monthNumber === null) {
+        alert(
+            "Please type a month number from 1 to 12 or a full month name."
+        );
+        return;
+    }
+
+
+    const daysInMonth =
+        new Date(
+            year,
+            monthNumber + 1,
+            0
+        ).getDate();
+
+
+    const monthData = {};
+
+
+    for (
+        let day = 1;
+        day <= daysInMonth;
+        day++
+    ) {
+
+        const key =
+            calendarKey(
+                year,
+                monthNumber,
+                day
+            );
+
+        monthData[day] =
+            calendarData[key] ||
+            "";
+    }
+
+
+    savedMonths.unshift({
+
+        id:Date.now(),
+
+        year:year,
+
+        month:monthNumber,
+
+        monthName:
+            monthNames[monthNumber],
+
+        savedAt:
+            new Date().toLocaleString(),
+
+        days:
+            monthData
+
+    });
+
+
+    localStorage.setItem(
+        "showerSavedMonths",
+        JSON.stringify(
+            savedMonths
+        )
+    );
+
+
+    scheduleSharedAppSave();
+
+    renderSavedData();
+
+
+    alert(
+        monthNames[monthNumber] +
+        " " +
+        year +
+        " was saved."
+    );
+}
+
+
+function resetCalendar() {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    const year =
+        Number(
+            document.getElementById(
+                "calendarYear"
+            ).value
+        );
+
+
+    if (
+        !confirm(
+            "Are you sure you want to clear the current year's calendar?"
+        )
+    ) {
+        return;
+    }
+
+
+    const reason =
+        prompt(
+            "Why are you resetting the calendar?"
+        );
+
+
+    if (
+        reason === null ||
+        !reason.trim()
+    ) {
+        return;
+    }
+
+
+    for (
+        let month = 0;
+        month < 12;
+        month++
+    ) {
+
+        const daysInMonth =
+            new Date(
+                year,
+                month + 1,
+                0
+            ).getDate();
+
+
+        for (
+            let day = 1;
+            day <= daysInMonth;
+            day++
+        ) {
+
+            delete calendarData[
+                calendarKey(
+                    year,
+                    month,
+                    day
+                )
+            ];
+        }
+    }
+
+
+    localStorage.setItem(
+        "showerCalendarData",
+        JSON.stringify(
+            calendarData
+        )
+    );
+
+
+    scheduleSharedAppSave();
+
+
+    recordChange(
+        "Calendar",
+        "Reset calendar for " + year,
+        reason.trim()
+    );
+
+
+    renderCalendar();
+    renderDashboard();
+    runFairnessChecker();
+}
+
+
+/* ============================================================
+   TRACKER
+   ============================================================ */
+
+function trackerKey(
+    year,
+    month,
+    day
+) {
+
+    return (
+        "tracker-" +
+        year +
+        "-" +
+        String(month + 1).padStart(2,"0") +
+        "-" +
+        String(day).padStart(2,"0")
+    );
+}
+
+
+function renderTracker() {
+
+    const yearElement =
+        document.getElementById(
+            "trackerYear"
+        );
+
+    const monthElement =
+        document.getElementById(
+            "trackerMonth"
+        );
+
+    const container =
+        document.getElementById(
+            "trackerContainer"
+        );
+
+
+    if (
+        !yearElement ||
+        !monthElement ||
+        !container
+    ) {
+        return;
+    }
+
+
+    const year =
+        Number(yearElement.value);
+
+    const month =
+        Number(monthElement.value);
+
+
+    container.innerHTML = "";
+
+
+    const table =
+        document.createElement(
+            "table"
+        );
+
+    table.className =
+        "tracker-table";
+
+
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>DAY</th>
+                <th>WHO</th>
+                <th>SIGNING STATUS</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    `;
+
+
+    const tbody =
+        table.querySelector(
+            "tbody"
+        );
+
+
+    for (
+        let day = 1;
+        day <= 31;
+        day++
+    ) {
+
+        const tr =
+            document.createElement(
+                "tr"
+            );
+
+
+        const dayCell =
+            document.createElement(
+                "td"
+            );
+
+        dayCell.textContent =
+            day;
+
+        tr.appendChild(
+            dayCell
+        );
+
+
+        const personCell =
+            document.createElement(
+                "td"
+            );
+
+
+        const personSelect =
+            document.createElement(
+                "select"
+            );
+
+
+        personSelect.innerHTML = `
+            <option value="">Choose</option>
+            <option value="Angelo">Angelo</option>
+            <option value="Matthew">Matthew</option>
+        `;
+
+
+        const key =
+            trackerKey(
+                year,
+                month,
+                day
+            );
+
+
+        const stored =
+            trackerData[key] ||
+            {};
+
+
+        personSelect.value =
+            stored.person ||
+            "";
+
+
+        personSelect.onchange =
+            function(){
+
+                if (!editMode) {
+                    return;
+                }
+
+
+                if (!trackerData[key]) {
+                    trackerData[key] = {};
+                }
+
+
+                trackerData[key].person =
+                    personSelect.value;
+
+
+                saveTracker();
+            };
+
+
+        personCell.appendChild(
+            personSelect
+        );
+
+        tr.appendChild(
+            personCell
+        );
+
+
+        const statusCell =
+            document.createElement(
+                "td"
+            );
+
+
+        const statusSelect =
+            document.createElement(
+                "select"
+            );
+
+
+        statusSelect.innerHTML = `
+            <option value="">Choose</option>
+            <option value="SIGNED">SIGNED</option>
+            <option value="MISSING">MISSING</option>
+        `;
+
+
+        statusSelect.value =
+            stored.status ||
+            "";
+
+
+        statusSelect.onchange =
+            function(){
+
+                if (!editMode) {
+                    return;
+                }
+
+
+                if (!trackerData[key]) {
+                    trackerData[key] = {};
+                }
+
+
+                trackerData[key].status =
+                    statusSelect.value;
+
+
+                saveTracker();
+            };
+
+
+        statusCell.appendChild(
+            statusSelect
+        );
+
+        tr.appendChild(
+            statusCell
+        );
+
+        tbody.appendChild(
+            tr
+        );
+    }
+
+
+    container.appendChild(
+        table
+    );
+}
+
+
+function saveTracker() {
+
+    localStorage.setItem(
+        "showerTrackerData",
+        JSON.stringify(
+            trackerData
+        )
+    );
+
+    scheduleSharedAppSave();
+}
+
+
+function saveCurrentTracker() {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    const year =
+        Number(
+            document.getElementById(
+                "trackerYear"
+            ).value
+        );
+
+
+    const month =
+        Number(
+            document.getElementById(
+                "trackerMonth"
+            ).value
+        );
+
+
+    const monthNames = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+    ];
+
+
+    const days = {};
+
+
+    for (
+        let day = 1;
+        day <= 31;
+        day++
+    ) {
+
+        const key =
+            trackerKey(
+                year,
+                month,
+                day
+            );
+
+
+        const stored =
+            trackerData[key] ||
+            {};
+
+
+        days[day] = {
+
+            person:
+                stored.person ||
+                "",
+
+            status:
+                stored.status ||
+                ""
+
+        };
+    }
+
+
+    savedTrackers.unshift({
+
+        id:Date.now(),
+
+        year:year,
+
+        month:month,
+
+        monthName:
+            monthNames[month],
+
+        savedAt:
+            new Date().toLocaleString(),
+
+        days:days
+
+    });
+
+
+    localStorage.setItem(
+        "showerSavedTrackers",
+        JSON.stringify(
+            savedTrackers
+        )
+    );
+
+
+    scheduleSharedAppSave();
+
+    renderSavedData();
+
+
+    alert(
+        monthNames[month] +
+        " " +
+        year +
+        " Signing Tracker was saved."
+    );
+}
+
+
+function renderSavedTrackers() {
+
+    const container =
+        document.getElementById(
+            "savedTrackersContainer"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    if (
+        !savedTrackers.length
+    ) {
+
+        container.innerHTML =
+            "<p>No saved signing trackers yet.</p>";
+
+        return;
+    }
+
+
+    savedTrackers.forEach(
+        function(savedTracker){
+
+            const box =
+                document.createElement(
+                    "div"
+                );
+
+            box.className =
+                "saved-month";
+
+
+            const title =
+                document.createElement(
+                    "h3"
+                );
+
+            title.textContent =
+                savedTracker.monthName +
+                " " +
+                savedTracker.year +
+                " — Signing Tracker";
+
+            box.appendChild(
+                title
+            );
+
+
+            const savedTime =
+                document.createElement(
+                    "p"
+                );
+
+            savedTime.textContent =
+                "Saved: " +
+                savedTracker.savedAt;
+
+            box.appendChild(
+                savedTime
+            );
+
+
+            const table =
+                document.createElement(
+                    "table"
+                );
+
+            table.className =
+                "tracker-table";
+
+
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>DAY</th>
+                        <th>WHO</th>
+                        <th>SIGNING STATUS</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            `;
+
+
+            const tbody =
+                table.querySelector(
+                    "tbody"
+                );
+
+
+            for (
+                let day = 1;
+                day <= 31;
+                day++
+            ) {
+
+                const tr =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                const dayCell =
+                    document.createElement(
+                        "td"
+                    );
+
+                dayCell.textContent =
+                    day;
+
+                tr.appendChild(
+                    dayCell
+                );
+
+
+                const personCell =
+                    document.createElement(
+                        "td"
+                    );
+
+                personCell.textContent =
+                    savedTracker.days &&
+                    savedTracker.days[day] &&
+                    savedTracker.days[day].person
+                        ? savedTracker.days[day].person
+                        : "Not assigned";
+
+                tr.appendChild(
+                    personCell
+                );
+
+
+                const statusCell =
+                    document.createElement(
+                        "td"
+                    );
+
+                statusCell.textContent =
+                    savedTracker.days &&
+                    savedTracker.days[day] &&
+                    savedTracker.days[day].status
+                        ? savedTracker.days[day].status
+                        : "Not selected";
+
+                tr.appendChild(
+                    statusCell
+                );
+
+
+                tbody.appendChild(
+                    tr
+                );
+            }
+
+
+            box.appendChild(
+                table
+            );
+
+
+            if (editMode) {
+
+                const deleteButton =
+                    document.createElement(
+                        "button"
+                    );
+
+                deleteButton.className =
+                    "delete-button";
+
+                deleteButton.textContent =
+                    "DELETE SAVED TRACKER";
+
+                deleteButton.onclick =
+                    function(){
+
+                        deleteSavedTracker(
+                            savedTracker.id
+                        );
+
+                    };
+
+                box.appendChild(
+                    deleteButton
+                );
+            }
+
+
+            container.appendChild(
+                box
+            );
+        }
+    );
+}
+
+
+function deleteSavedTracker(id) {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    if (
+        !confirm(
+            "Delete this saved signing tracker?"
+        )
+    ) {
+        return;
+    }
+
+
+    const reason =
+        prompt(
+            "Why are you deleting this saved tracker?"
+        );
+
+
+    if (
+        reason === null ||
+        !reason.trim()
+    ) {
+        return;
+    }
+
+
+    savedTrackers =
+        savedTrackers.filter(
+            function(item){
+                return item.id !== id;
+            }
+        );
+
+
+    localStorage.setItem(
+        "showerSavedTrackers",
+        JSON.stringify(
+            savedTrackers
+        )
+    );
+
+
+    scheduleSharedAppSave();
+
+
+    recordChange(
+        "Signing Tracker",
+        "Deleted saved signing tracker",
+        reason.trim()
+    );
+
+
+    renderSavedTrackers();
+}
+
+
+/* ============================================================
+   ANGELO POINTS
+   ============================================================ */
+
+function renderAngeloPoints() {
+
+    const display =
+        document.getElementById(
+            "angeloPointsDisplay"
+        );
+
+    const progress =
+        document.getElementById(
+            "angeloPointsProgress"
+        );
+
+
+    if (!display || !progress) {
+        return;
+    }
+
+
+    display.textContent =
+        angeloPoints +
+        (
+            angeloPoints === 1
+                ? " POINT"
+                : " POINTS"
+        );
+
+
+    const percentage =
+        Math.max(
+            0,
+            Math.min(
+                (angeloPoints / 15) * 100,
+                100
+            )
+        );
+
+
+    progress.style.width =
+        percentage + "%";
+}
+
+
+function saveAngeloPoints() {
+
+    localStorage.setItem(
+        "angeloPoints",
+        String(angeloPoints)
+    );
+
+    scheduleSharedAppSave();
+}
+
+
+function addAngeloPoint() {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    const reason =
+        prompt(
+            "Why are you adding 1 point to Angelo?"
+        );
+
+
+    if (
+        reason === null ||
+        !reason.trim()
+    ) {
+        return;
+    }
+
+
+    const oldPoints =
+        angeloPoints;
+
+
+    angeloPoints++;
+
+
+    saveAngeloPoints();
+
+    renderAngeloPoints();
+
+
+    recordChange(
+        "Angelo's points",
+        "Changed from " +
+        oldPoints +
+        " to " +
+        angeloPoints,
+        reason.trim()
+    );
+
+
+    renderDashboard();
+}
+
+
+function removeAngeloPoint() {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    const reason =
+        prompt(
+            "Why are you removing 1 point from Angelo?"
+        );
+
+
+    if (
+        reason === null ||
+        !reason.trim()
+    ) {
+        return;
+    }
+
+
+    const oldPoints =
+        angeloPoints;
+
+
+    angeloPoints--;
+
+
+    saveAngeloPoints();
+
+    renderAngeloPoints();
+
+
+    recordChange(
+        "Angelo's points",
+        "Changed from " +
+        oldPoints +
+        " to " +
+        angeloPoints,
+        reason.trim()
+    );
+
+
+    renderDashboard();
+}
+
+
+function resetPoints() {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    if (
+        !confirm(
+            "Reset Angelo's points to 0?"
+        )
+    ) {
+        return;
+    }
+
+
+    const reason =
+        prompt(
+            "Why are you resetting Angelo's points?"
+        );
+
+
+    if (
+        reason === null ||
+        !reason.trim()
+    ) {
+        return;
+    }
+
+
+    const oldPoints =
+        angeloPoints;
+
+
+    angeloPoints = 0;
+
+
+    saveAngeloPoints();
+
+    renderAngeloPoints();
+
+    renderDashboard();
+
+
+    recordChange(
+        "Angelo's points",
+        "Reset from " +
+        oldPoints +
+        " to 0",
+        reason.trim()
+    );
+}
+
+
+function setupPointsMode() {
+
+    const ids = [
+        "addPointButton",
+        "removePointButton",
+        "saveRewardButton",
+        "newRewardButton"
+    ];
+
+
+    ids.forEach(
+        function(id){
+
+            const button =
+                document.getElementById(
+                    id
+                );
+
+            if (button) {
+
+                button.style.display =
+                    editMode
+                        ? ""
+                        : "none";
+            }
+        }
+    );
+}
+
+
+/* ============================================================
+   REWARDS
+   ============================================================ */
+
+function setRewardToday() {
+
+    const input =
+        document.getElementById(
+            "rewardDate"
+        );
+
+
+    if (!input) {
+        return;
+    }
+
+
+    const today =
+        new Date();
+
+
+    input.value =
+        today.getFullYear() +
+        "-" +
+        String(
+            today.getMonth() + 1
+        ).padStart(2,"0") +
+        "-" +
+        String(
+            today.getDate()
+        ).padStart(2,"0");
+}
+
+
+function saveReward() {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    const date =
+        document.getElementById(
+            "rewardDate"
+        ).value;
+
+
+    const reward =
+        document.getElementById(
+            "rewardName"
+        ).value.trim();
+
+
+    const notes =
+        document.getElementById(
+            "rewardNotes"
+        ).value.trim();
+
+
+    if (!date) {
+
+        alert(
+            "Please choose a date."
+        );
+
+        return;
+    }
+
+
+    if (!reward) {
+
+        alert(
+            "Please enter the reward."
+        );
+
+        return;
+    }
+
+
+    const reason =
+        prompt(
+            "Why are you adding this reward to the history?"
+        );
+
+
+    if (
+        reason === null ||
+        !reason.trim()
+    ) {
+        return;
+    }
+
+
+    rewardHistory.unshift({
+
+        id:Date.now(),
+
+        date:date,
+
+        reward:reward,
+
+        notes:notes,
+
+        savedAt:
+            new Date().toLocaleString()
+
+    });
+
+
+    localStorage.setItem(
+        "angeloRewardHistory",
+        JSON.stringify(
+            rewardHistory
+        )
+    );
+
+
+    scheduleSharedAppSave();
+
+
+    recordChange(
+        "Reward history",
+        "Added reward: " + reward,
+        reason.trim()
+    );
+
+
+    renderRewardHistory();
+    renderDashboard();
+
+    newReward();
+
+
+    alert(
+        "Reward saved."
+    );
+}
+
+
+function newReward() {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    setRewardToday();
+
+
+    document.getElementById(
+        "rewardName"
+    ).value = "";
+
+
+    document.getElementById(
+        "rewardNotes"
+    ).value = "";
+}
+
+
+function renderRewardHistory() {
+
+    const container =
+        document.getElementById(
+            "rewardHistoryContainer"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    if (!rewardHistory.length) {
+
+        container.innerHTML =
+            "<p>No rewards recorded yet.</p>";
+
+        return;
+    }
+
+
+    rewardHistory.forEach(
+        function(entry){
+
+            const box =
+                document.createElement(
+                    "div"
+                );
+
+            box.className =
+                "reward-entry";
+
+
+            const title =
+                document.createElement(
+                    "h3"
+                );
+
+            title.textContent =
+                "Reward - " +
+                entry.date;
+
+            box.appendChild(
+                title
+            );
+
+
+            const details =
+                document.createElement(
+                    "pre"
+                );
+
+            details.textContent =
+                "Reward: " +
+                entry.reward +
+                "\n\n" +
+                "Notes:\n" +
+                (
+                    entry.notes ||
+                    "No notes"
+                ) +
+                "\n\n" +
+                "Saved: " +
+                entry.savedAt;
+
+            box.appendChild(
+                details
+            );
+
+
+            if (editMode) {
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+                button.className =
+                    "delete-button";
+
+                button.textContent =
+                    "DELETE REWARD";
+
+                button.onclick =
+                    function(){
+
+                        deleteReward(
+                            entry.id
+                        );
+
+                    };
+
+                box.appendChild(
+                    button
+                );
+            }
+
+
+            container.appendChild(
+                box
+            );
+        }
+    );
+}
+
+
+function deleteReward(id) {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    if (
+        !confirm(
+            "Delete this saved reward?"
+        )
+    ) {
+        return;
+    }
+
+
+    const deletedReward =
+        rewardHistory.find(
+            function(item){
+                return item.id === id;
+            }
+        );
+
+
+    const reason =
+        prompt(
+            "Why are you deleting this reward?"
+        );
+
+
+    if (
+        reason === null ||
+        !reason.trim()
+    ) {
+        return;
+    }
+
+
+    rewardHistory =
+        rewardHistory.filter(
+            function(item){
+                return item.id !== id;
+            }
+        );
+
+
+    localStorage.setItem(
+        "angeloRewardHistory",
+        JSON.stringify(
+            rewardHistory
+        )
+    );
+
+
+    scheduleSharedAppSave();
+
+
+    recordChange(
+        "Reward history",
+        "Deleted reward: " +
+        (
+            deletedReward
+                ? deletedReward.reward
+                : "Unknown reward"
+        ),
+        reason.trim()
+    );
+
+
+    renderRewardHistory();
+    renderDashboard();
+}
+
+
+function resetRewards() {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    if (
+        !confirm(
+            "Clear all reward history?"
+        )
+    ) {
+        return;
+    }
+
+
+    const reason =
+        prompt(
+            "Why are you clearing the reward history?"
+        );
+
+
+    if (
+        reason === null ||
+        !reason.trim()
+    ) {
+        return;
+    }
+
+
+    const oldCount =
+        rewardHistory.length;
+
+
+    rewardHistory = [];
+
+
+    localStorage.setItem(
+        "angeloRewardHistory",
+        JSON.stringify(
+            rewardHistory
+        )
+    );
+
+
+    scheduleSharedAppSave();
+
+
+    recordChange(
+        "Reward history",
+        "Cleared " +
+        oldCount +
+        " reward(s)",
+        reason.trim()
+    );
+
+
+    renderRewardHistory();
+    renderDashboard();
+}
+
+
+/* ============================================================
+   DAILY PAPER
+   ============================================================ */
+
+function setToday() {
+
+    const input =
+        document.getElementById(
+            "paperDate"
+        );
+
+
+    if (!input) {
+        return;
+    }
+
+
+    const today =
+        new Date();
+
+
+    input.value =
+        today.getFullYear() +
+        "-" +
+        String(
+            today.getMonth() + 1
+        ).padStart(2,"0") +
+        "-" +
+        String(
+            today.getDate()
+        ).padStart(2,"0");
+}
+
+
+function saveDailyPaper() {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    const date =
+        document.getElementById(
+            "paperDate"
+        ).value;
+
+
+    const firstShowerer =
+        document.getElementById(
+            "firstShowerer"
+        ).value;
+
+
+    const status =
+        document.getElementById(
+            "paperStatus"
+        ).value;
+
+
+    const notes =
+        document.getElementById(
+            "paperNotes"
+        ).value;
+
+
+    if (!date) {
+
+        alert(
+            "Please choose a date."
+        );
+
+        return;
+    }
+
+
+    if (!firstShowerer) {
+
+        alert(
+            "Please choose who showered first."
+        );
+
+        return;
+    }
+
+
+    savedPapers.unshift({
+
+        id:Date.now(),
+
+        date:date,
+
+        firstShowerer:
+            firstShowerer,
+
+        status:status,
+
+        notes:notes,
+
+        savedAt:
+            new Date().toLocaleString()
+
+    });
+
+
+    localStorage.setItem(
+        "showerSavedPapers",
+        JSON.stringify(
+            savedPapers
+        )
+    );
+
+
+    scheduleSharedAppSave();
+
+    renderSavedData();
+
+    renderDashboard();
+
+
+    alert(
+        "Daily paper saved."
+    );
+}
+
+
+function newDailyPaper() {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    setToday();
+
+
+    document.getElementById(
+        "firstShowerer"
+    ).value = "";
+
+
+    document.getElementById(
+        "paperStatus"
+    ).value = "";
+
+
+    document.getElementById(
+        "paperNotes"
+    ).value = "";
+}
+
+
+/* ============================================================
+   SAVED DATA
+   ============================================================ */
+
+function renderSavedData() {
+
+    renderSavedMonths();
+
+    renderSavedTrackers();
+
+    renderSavedPapers();
+}
+
+
+function renderSavedMonths() {
+
+    const container =
+        document.getElementById(
+            "savedMonthsContainer"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    if (!savedMonths.length) {
+
+        container.innerHTML =
+            "<p>No saved months yet.</p>";
+
+        return;
+    }
+
+
+    savedMonths.forEach(
+        function(savedMonth){
+
+            const box =
+                document.createElement(
+                    "div"
+                );
+
+            box.className =
+                "saved-month";
+
+
+            const title =
+                document.createElement(
+                    "h3"
+                );
+
+            title.textContent =
+                savedMonth.monthName +
+                " " +
+                savedMonth.year;
+
+            box.appendChild(
+                title
+            );
+
+
+            const savedTime =
+                document.createElement(
+                    "p"
+                );
+
+            savedTime.textContent =
+                "Saved: " +
+                savedMonth.savedAt;
+
+            box.appendChild(
+                savedTime
+            );
+
+
+            const grid =
+                document.createElement(
+                    "div"
+                );
+
+            grid.className =
+                "saved-month-grid";
+
+
+            for (
+                let day = 1;
+                day <= 31;
+                day++
+            ) {
+
+                const dayBox =
+                    document.createElement(
+                        "div"
+                    );
+
+                dayBox.className =
+                    "saved-month-day";
+
+
+                const dayNumber =
+                    document.createElement(
+                        "strong"
+                    );
+
+                dayNumber.textContent =
+                    "Day " + day;
+
+                dayBox.appendChild(
+                    dayNumber
+                );
+
+
+                const person =
+                    document.createElement(
+                        "div"
+                    );
+
+                person.textContent =
+                    (
+                        savedMonth.days &&
+                        savedMonth.days[day]
+                    ) ||
+                    "Not assigned";
+
+                dayBox.appendChild(
+                    person
+                );
+
+
+                grid.appendChild(
+                    dayBox
+                );
+            }
+
+
+            box.appendChild(
+                grid
+            );
+
+
+            if (editMode) {
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+                button.className =
+                    "delete-button";
+
+                button.textContent =
+                    "DELETE SAVED MONTH";
+
+                button.onclick =
+                    function(){
+
+                        deleteSavedMonth(
+                            savedMonth.id
+                        );
+
+                    };
+
+                box.appendChild(
+                    button
+                );
+            }
+
+
+            container.appendChild(
+                box
+            );
+        }
+    );
+}
+
+
+function deleteSavedMonth(id) {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    if (
+        !confirm(
+            "Delete this saved month?"
+        )
+    ) {
+        return;
+    }
+
+
+    const reason =
+        prompt(
+            "Why are you deleting this saved month?"
+        );
+
+
+    if (
+        reason === null ||
+        !reason.trim()
+    ) {
+        return;
+    }
+
+
+    savedMonths =
+        savedMonths.filter(
+            function(item){
+                return item.id !== id;
+            }
+        );
+
+
+    localStorage.setItem(
+        "showerSavedMonths",
+        JSON.stringify(
+            savedMonths
+        )
+    );
+
+
+    scheduleSharedAppSave();
+
+
+    recordChange(
+        "Saved Months",
+        "Deleted saved month",
+        reason.trim()
+    );
+
+
+    renderSavedMonths();
+    renderDashboard();
+}
+
+
+function renderSavedPapers() {
+
+    const container =
+        document.getElementById(
+            "savedPapersContainer"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    if (!savedPapers.length) {
+
+        container.innerHTML =
+            "<p>No saved daily papers yet.</p>";
+
+        return;
+    }
+
+
+    savedPapers.forEach(
+        function(paper){
+
+            const box =
+                document.createElement(
+                    "div"
+                );
+
+            box.className =
+                "saved-item";
+
+
+            const title =
+                document.createElement(
+                    "h3"
+                );
+
+            title.textContent =
+                "Daily Paper - " +
+                paper.date;
+
+            box.appendChild(
+                title
+            );
+
+
+            const details =
+                document.createElement(
+                    "pre"
+                );
+
+            details.textContent =
+                "Who showered first: " +
+                paper.firstShowerer +
+                "\n\n" +
+                "Signing status: " +
+                (
+                    paper.status ||
+                    "Not selected"
+                ) +
+                "\n\n" +
+                "Notes:\n" +
+                (
+                    paper.notes ||
+                    "No notes"
+                ) +
+                "\n\n" +
+                "Saved: " +
+                paper.savedAt;
+
+            box.appendChild(
+                details
+            );
+
+
+            if (editMode) {
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+                button.className =
+                    "delete-button";
+
+                button.textContent =
+                    "DELETE PAPER";
+
+                button.onclick =
+                    function(){
+
+                        deletePaper(
+                            paper.id
+                        );
+
+                    };
+
+                box.appendChild(
+                    button
+                );
+            }
+
+
+            container.appendChild(
+                box
+            );
+        }
+    );
+}
+
+
+function deletePaper(id) {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    if (
+        !confirm(
+            "Delete this saved paper?"
+        )
+    ) {
+        return;
+    }
+
+
+    const reason =
+        prompt(
+            "Why are you deleting this saved paper?"
+        );
+
+
+    if (
+        reason === null ||
+        !reason.trim()
+    ) {
+        return;
+    }
+
+
+    savedPapers =
+        savedPapers.filter(
+            function(item){
+                return item.id !== id;
+            }
+        );
+
+
+    localStorage.setItem(
+        "showerSavedPapers",
+        JSON.stringify(
+            savedPapers
+        )
+    );
+
+
+    scheduleSharedAppSave();
+
+
+    recordChange(
+        "Daily Paper",
+        "Deleted saved daily paper",
+        reason.trim()
+    );
+
+
+    renderSavedPapers();
+    renderDashboard();
+}
+
+
+/* ============================================================
+   CHANGE LOG
+   ============================================================ */
+
+function recordChange(
+    type,
+    change,
+    reason
+) {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    changeLog.unshift({
+
+        id:
+            Date.now() +
+            Math.random(),
+
+        date:
+            new Date().toLocaleString(),
+
+        type:type,
+
+        change:change,
+
+        reason:reason
+
+    });
+
+
+    localStorage.setItem(
+        "showerChangeLog",
+        JSON.stringify(
+            changeLog
+        )
+    );
+
+
+    scheduleSharedAppSave();
+
+    renderChangeLog();
+}
+
+
+function addManualChangeLog() {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    const change =
+        prompt(
+            "What changed?"
+        );
+
+
+    if (
+        change === null ||
+        !change.trim()
+    ) {
+        return;
+    }
+
+
+    const reason =
+        prompt(
+            "Why did you make this change?"
+        );
+
+
+    if (
+        reason === null ||
+        !reason.trim()
+    ) {
+        return;
+    }
+
+
+    recordChange(
+        "Manual entry",
+        change.trim(),
+        reason.trim()
+    );
+}
+
+
+function renderChangeLog() {
+
+    const container =
+        document.getElementById(
+            "changeLogContainer"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    if (!changeLog.length) {
+
+        container.innerHTML =
+            "<p>No changes recorded yet.</p>";
+
+        return;
+    }
+
+
+    changeLog.forEach(
+        function(entry){
+
+            const box =
+                document.createElement(
+                    "div"
+                );
+
+            box.className =
+                "change-log-entry";
+
+
+            const heading =
+                document.createElement(
+                    "h3"
+                );
+
+            heading.textContent =
+                entry.type;
+
+            box.appendChild(
+                heading
+            );
+
+
+            const details =
+                document.createElement(
+                    "pre"
+                );
+
+            details.textContent =
+                "Date: " +
+                entry.date +
+                "\n\n" +
+                "Change: " +
+                entry.change +
+                "\n\n" +
+                "Reason: " +
+                entry.reason;
+
+            box.appendChild(
+                details
+            );
+
+
+            if (editMode) {
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+                button.className =
+                    "delete-button";
+
+                button.textContent =
+                    "DELETE LOG";
+
+                button.onclick =
+                    function(){
+
+                        const reason =
+                            prompt(
+                                "Why are you deleting this log entry?"
+                            );
+
+                        if (
+                            reason === null ||
+                            !reason.trim()
+                        ) {
+                            return;
+                        }
+
+
+                        changeLog =
+                            changeLog.filter(
+                                function(item){
+                                    return item.id !== entry.id;
+                                }
+                            );
+
+
+                        localStorage.setItem(
+                            "showerChangeLog",
+                            JSON.stringify(
+                                changeLog
+                            )
+                        );
+
+
+                        scheduleSharedAppSave();
+
+
+                        renderChangeLog();
+                    };
+
+
+                box.appendChild(
+                    button
+                );
+            }
+
+
+            container.appendChild(
+                box
+            );
+        }
+    );
+}
+
+
+function clearChangeLog() {
+
+    if (!editMode || !changeLog.length) {
+        return;
+    }
+
+
+    if (
+        !confirm(
+            "Clear the entire change log?"
+        )
+    ) {
+        return;
+    }
+
+
+    const reason =
+        prompt(
+            "Why are you clearing the change log?"
+        );
+
+
+    if (
+        reason === null ||
+        !reason.trim()
+    ) {
+        return;
+    }
+
+
+    changeLog = [];
+
+
+    localStorage.setItem(
+        "showerChangeLog",
+        JSON.stringify(
+            changeLog
+        )
+    );
+
+
+    scheduleSharedAppSave();
+
+
+    renderChangeLog();
+}
+
+
+/* ============================================================
+   COUNTDOWNS
+   ============================================================ */
+
+function newCountdown() {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    document.getElementById(
+        "countdownName"
+    ).value = "";
+
+
+    document.getElementById(
+        "countdownDate"
+    ).value = "";
+
+
+    document.getElementById(
+        "countdownTime"
+    ).value = "00:00";
+
+
+    updateCountdownLive();
+}
+
+
+function saveCountdown() {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    const name =
+        document.getElementById(
+            "countdownName"
+        ).value.trim();
+
+
+    const date =
+        document.getElementById(
+            "countdownDate"
+        ).value;
+
+
+    const time =
+        document.getElementById(
+            "countdownTime"
+        ).value ||
+        "00:00";
+
+
+    if (!name || !date) {
+
+        alert(
+            "Please enter a name and date."
+        );
+
+        return;
+    }
+
+
+    const reason =
+        prompt(
+            "Why are you saving this countdown?"
+        );
+
+
+    if (
+        reason === null ||
+        !reason.trim()
+    ) {
+        return;
+    }
+
+
+    countdowns.unshift({
+
+        id:Date.now(),
+
+        name:name,
+
+        date:date,
+
+        time:time
+
+    });
+
+
+    localStorage.setItem(
+        "showerCountdowns",
+        JSON.stringify(
+            countdowns
+        )
+    );
+
+
+    scheduleSharedAppSave();
+
+
+    recordChange(
+        "Countdown",
+        "Saved countdown: " +
+        name +
+        " for " +
+        date +
+        " " +
+        time,
+        reason.trim()
+    );
+
+
+    renderCountdowns();
+    updateCountdownLive();
+}
+
+
+function countdownTarget(entry) {
+
+    return new Date(
+        entry.date +
+        "T" +
+        (
+            entry.time ||
+            "00:00"
+        ) +
+        ":00"
+    );
+}
+
+
+function getCountdownParts(target) {
+
+    let ms =
+        target.getTime() -
+        Date.now();
+
+
+    if (ms <= 0) {
+
+        return {
+            expired:true,
+            months:0,
+            days:0,
+            weeks:0,
+            hours:0,
+            minutes:0,
+            seconds:0,
+            totalDays:0,
+            totalHours:0,
+            totalMinutes:0,
+            totalSeconds:0
+        };
+    }
+
+
+    const totalSeconds =
+        Math.floor(
+            ms / 1000
+        );
+
+
+    const totalMinutes =
+        Math.floor(
+            ms / 60000
+        );
+
+
+    const totalHours =
+        Math.floor(
+            ms / 3600000
+        );
+
+
+    const totalDays =
+        Math.floor(
+            ms / 86400000
+        );
+
+
+    const weeks =
+        Math.floor(
+            totalDays / 7
+        );
+
+
+    let cursor =
+        new Date();
+
+
+    let months = 0;
+
+
+    while (true) {
+
+        const next =
+            new Date(
+                cursor
+            );
+
+
+        next.setMonth(
+            next.getMonth() + 1
+        );
+
+
+        if (
+            next <= target
+        ) {
+
+            months++;
+
+            cursor = next;
+
+        } else {
+
+            break;
+        }
+
+
+        if (
+            months > 120000
+        ) {
+            break;
+        }
+    }
+
+
+    const days =
+        Math.floor(
+            (
+                target -
+                cursor
+            ) / 86400000
+        );
+
+
+    const remainder =
+        target -
+        (
+            cursor.getTime() +
+            days * 86400000
+        );
+
+
+    const hours =
+        Math.floor(
+            remainder / 3600000
+        );
+
+
+    const minutes =
+        Math.floor(
+            (
+                remainder %
+                3600000
+            ) / 60000
+        );
+
+
+    const seconds =
+        Math.floor(
+            (
+                remainder %
+                60000
+            ) / 1000
+        );
+
+
+    return {
+        expired:false,
+        months:months,
+        days:days,
+        weeks:weeks,
+        hours:hours,
+        minutes:minutes,
+        seconds:seconds,
+        totalDays:totalDays,
+        totalHours:totalHours,
+        totalMinutes:totalMinutes,
+        totalSeconds:totalSeconds
+    };
+}
+
+
+function countdownHTML(entry) {
+
+    const parts =
+        getCountdownParts(
+            countdownTarget(entry)
+        );
+
+
+    if (parts.expired) {
+
+        return "<strong>TIME REACHED</strong>";
+    }
+
+
+    return `
+        <div class="countdown-grid">
+            <div class="countdown-number">
+                <strong>${parts.months}</strong>
+                MONTHS
+            </div>
+
+            <div class="countdown-number">
+                <strong>${parts.days}</strong>
+                DAYS
+            </div>
+
+            <div class="countdown-number">
+                <strong>${parts.weeks}</strong>
+                WEEKS
+            </div>
+
+            <div class="countdown-number">
+                <strong>${parts.hours}</strong>
+                HOURS
+            </div>
+
+            <div class="countdown-number">
+                <strong>${parts.minutes}</strong>
+                MINUTES
+            </div>
+
+            <div class="countdown-number">
+                <strong>${parts.seconds}</strong>
+                SECONDS
+            </div>
+        </div>
+
+        <p>
+            Total:
+            ${parts.totalDays} days /
+            ${parts.totalHours} hours /
+            ${parts.totalMinutes} minutes /
+            ${parts.totalSeconds} seconds
+        </p>
+    `;
+}
+
+
+function formatCountdownDate(entry) {
+
+    return countdownTarget(
+        entry
+    ).toLocaleString(
+        undefined,
+        {
+            year:"numeric",
+            month:"long",
+            day:"numeric",
+            hour:"numeric",
+            minute:"2-digit"
+        }
+    );
+}
+
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+
+function updateCountdownLive() {
+
+    const box =
+        document.getElementById(
+            "countdownLiveContent"
+        );
+
+
+    if (!box) {
+        return;
+    }
+
+
+    const date =
+        document.getElementById(
+            "countdownDate"
+        ).value;
+
+
+    if (!date) {
+
+        box.textContent =
+            "Choose a date and time.";
+
+        return;
+    }
+
+
+    const entry = {
+
+        name:
+            document.getElementById(
+                "countdownName"
+            ).value ||
+            "Selected countdown",
+
+        date:date,
+
+        time:
+            document.getElementById(
+                "countdownTime"
+            ).value ||
+            "00:00"
+    };
+
+
+    box.innerHTML =
+        "<h3>" +
+        escapeHTML(entry.name) +
+        "</h3>" +
+        "<p>Target: " +
+        escapeHTML(
+            formatCountdownDate(entry)
+        ) +
+        "</p>" +
+        countdownHTML(entry);
+}
+
+
+function startCountdownTimer() {
+
+    if (countdownTimer) {
+        clearInterval(
+            countdownTimer
+        );
+    }
+
+
+    countdownTimer =
+        setInterval(
+            function(){
+
+                updateCountdownLive();
+
+                renderCountdowns();
+
+            },
+            1000
+        );
+}
+
+
+function renderCountdowns() {
+
+    const container =
+        document.getElementById(
+            "savedCountdownsContainer"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    if (!countdowns.length) {
+
+        container.innerHTML =
+            "<p>No countdowns saved yet.</p>";
+
+        return;
+    }
+
+
+    countdowns.forEach(
+        function(entry){
+
+            const box =
+                document.createElement(
+                    "div"
+                );
+
+            box.className =
+                "countdown-entry";
+
+
+            const heading =
+                document.createElement(
+                    "h3"
+                );
+
+            heading.textContent =
+                entry.name;
+
+            box.appendChild(
+                heading
+            );
+
+
+            const target =
+                document.createElement(
+                    "p"
+                );
+
+            target.textContent =
+                "Target: " +
+                formatCountdownDate(
+                    entry
+                );
+
+            box.appendChild(
+                target
+            );
+
+
+            const content =
+                document.createElement(
+                    "div"
+                );
+
+            content.innerHTML =
+                countdownHTML(
+                    entry
+                );
+
+            box.appendChild(
+                content
+            );
+
+
+            if (editMode) {
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+                button.className =
+                    "delete-button";
+
+                button.textContent =
+                    "DELETE COUNTDOWN";
+
+                button.onclick =
+                    function(){
+
+                        deleteCountdown(
+                            entry.id
+                        );
+
+                    };
+
+                box.appendChild(
+                    button
+                );
+            }
+
+
+            container.appendChild(
+                box
+            );
+        }
+    );
+}
+
+
+function deleteCountdown(id) {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    const entry =
+        countdowns.find(
+            function(item){
+                return item.id === id;
+            }
+        );
+
+
+    const reason =
+        prompt(
+            "Why are you deleting this countdown?"
+        );
+
+
+    if (
+        reason === null ||
+        !reason.trim()
+    ) {
+        return;
+    }
+
+
+    countdowns =
+        countdowns.filter(
+            function(item){
+                return item.id !== id;
+            }
+        );
+
+
+    localStorage.setItem(
+        "showerCountdowns",
+        JSON.stringify(
+            countdowns
+        )
+    );
+
+
+    scheduleSharedAppSave();
+
+
+    recordChange(
+        "Countdown",
+        "Deleted countdown: " +
+        (
+            entry
+                ? entry.name
+                : "Unknown"
+        ),
+        reason.trim()
+    );
+
+
+    renderCountdowns();
+}
+
+
+/* ============================================================
+   FAIRNESS CHECKER
+   ============================================================ */
+
+function runFairnessChecker() {
+
+    const result =
+        document.getElementById(
+            "fairnessResult"
+        );
+
+
+    if (!result) {
+        return;
+    }
+
+
+    const keys =
+        Object.keys(
+            calendarData
+        )
+        .filter(
+            function(key){
+
+                return (
+                    calendarData[key] === "Angelo" ||
+                    calendarData[key] === "Matthew"
+                );
+
+            }
+        )
+        .sort();
+
+
+    if (!keys.length) {
+
+        result.innerHTML =
+            "<strong>NOT ENOUGH DATA</strong><br><br>" +
+            "No saved calendar assignments were found.";
+
+        return;
+    }
+
+
+    const problems = [];
+
+
+    for (
+        let i = 1;
+        i < keys.length;
+        i++
+    ) {
+
+        const previous =
+            calendarData[
+                keys[i - 1]
+            ];
+
+        const current =
+            calendarData[
+                keys[i]
+            ];
+
+
+        if (
+            previous === current
+        ) {
+
+            problems.push(
+                keys[i] +
+                ": " +
+                current +
+                " is scheduled after " +
+                current +
+                "."
+            );
+        }
+
+
+        const a =
+            new Date(
+                keys[i - 1] +
+                "T00:00:00"
+            );
+
+
+        const b =
+            new Date(
+                keys[i] +
+                "T00:00:00"
+            );
+
+
+        const gap =
+            Math.round(
+                (b - a) /
+                86400000
+            );
+
+
+        if (gap > 1) {
+
+            problems.push(
+                keys[i - 1] +
+                " to " +
+                keys[i] +
+                ": there are " +
+                (gap - 1) +
+                " unscheduled day(s) between saved assignments."
+            );
+        }
+    }
+
+
+    if (!problems.length) {
+
+        result.innerHTML =
+            '<span class="fairness-ok">' +
+            "SCHEDULE LOOKS FAIR" +
+            "</span><br><br>" +
+            "Saved assignments alternate correctly " +
+            "and there are no missing days between them.";
+
+    } else {
+
+        result.innerHTML =
+            '<span class="fairness-warning">' +
+            "POSSIBLE SCHEDULE PROBLEMS" +
+            "</span><br><br>" +
+            problems
+                .map(escapeHTML)
+                .join("<br><br>");
+    }
+}
+
+
+/* ============================================================
+   CHANGE REQUESTS
+   ============================================================ */
+
+async function loadSharedRequests() {
+
+    try {
+
+        const response =
+            await fetch(
+                sharedDatabaseUrl(
+                    SHARED_REQUESTS_PATH
+                ),
+                {
+                    cache:"no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Database request failed: " +
+                response.status
+            );
+        }
+
+
+        const data =
+            await response.json();
+
+
+        sharedRequests =
+            data
+                ? Object.keys(data)
+                    .map(
+                        function(key){
+
+                            return Object.assign(
+                                {
+                                    id:key
+                                },
+                                data[key]
+                            );
+
+                        }
+                    )
+                : [];
+
+
+        sharedRequests.sort(
+            function(a,b){
+
+                return (
+                    Number(
+                        b.createdAt || 0
+                    ) -
+                    Number(
+                        a.createdAt || 0
+                    )
+                );
+
+            }
+        );
+
+
+        const status =
+            document.getElementById(
+                "changeRequestConnection"
+            );
+
+
+        if (status) {
+
+            status.textContent =
+                "SHARED REQUEST DATABASE: CONNECTED";
+        }
+
+
+        renderChangeRequests();
+
+        return true;
+
+    } catch(error) {
+
+        console.error(
+            "Change request database error:",
+            error
+        );
+
+
+        const status =
+            document.getElementById(
+                "changeRequestConnection"
+            );
+
+
+        if (status) {
+
+            status.textContent =
+                "SHARED REQUEST DATABASE: NOT CONNECTED — CHECK THE FIREBASE DATABASE URL AND RULES.";
+        }
+
+
+        renderChangeRequests();
+
+        return false;
+    }
+}
+
+
+async function writeSharedRequest(request) {
+
+    const response =
+        await fetch(
+            sharedDatabaseUrl(
+                SHARED_REQUESTS_PATH +
+                "/" +
+                encodeURIComponent(
+                    request.id
+                )
+            ),
+            {
+                method:"PUT",
+
+                headers:{
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify(
+                        request
+                    )
+            }
+        );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            "Database write failed: " +
+            response.status
+        );
+    }
+}
+
+
+function openChangeRequestForm() {
+
+    const modal =
+        document.getElementById(
+            "changeRequestModal"
+        );
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    document.getElementById(
+        "requestName"
+    ).value = "";
+
+
+    document.getElementById(
+        "requestChange"
+    ).value = "";
+
+
+    document.getElementById(
+        "requestReason"
+    ).value = "";
+
+
+    document.getElementById(
+        "requestFormMessage"
+    ).textContent = "";
+
+
+    modal.style.display =
+        "block";
+}
+
+
+function closeChangeRequestForm() {
+
+    const modal =
+        document.getElementById(
+            "changeRequestModal"
+        );
+
+
+    if (modal) {
+        modal.style.display =
+            "none";
+    }
+}
+
+
+async function submitChangeRequest() {
+
+    if (editMode) {
+        return;
+    }
+
+
+    const name =
+        document.getElementById(
+            "requestName"
+        ).value.trim();
+
+
+    const change =
+        document.getElementById(
+            "requestChange"
+        ).value.trim();
+
+
+    const reason =
+        document.getElementById(
+            "requestReason"
+        ).value.trim();
+
+
+    const message =
+        document.getElementById(
+            "requestFormMessage"
+        );
+
+
+    if (
+        !name ||
+        !change ||
+        !reason
+    ) {
+
+        message.textContent =
+            "Please fill in your name, requested change, and reason.";
+
+        return;
+    }
+
+
+    const request = {
+
+        id:
+            String(Date.now()) +
+            "-" +
+            Math.random()
+                .toString(36)
+                .slice(2,8),
+
+        requestedBy:name,
+
+        change:change,
+
+        reason:reason,
+
+        status:"PENDING",
+
+        createdAt:Date.now(),
+
+        createdDate:
+            new Date().toLocaleString()
+    };
+
+
+    try {
+
+        message.textContent =
+            "Sending request...";
+
+
+        await writeSharedRequest(
+            request
+        );
+
+
+        await loadSharedRequests();
+
+
+        message.textContent =
+            "REQUEST SENT. It will appear in Edit Mode.";
+
+
+        setTimeout(
+            closeChangeRequestForm,
+            800
+        );
+
+
+    } catch(error) {
+
+        console.error(
+            error
+        );
+
+
+        message.textContent =
+            "The request could not be sent. Make sure the shared database is connected.";
+    }
+}
+
+
+async function decideChangeRequest(
+    id,
+    decision
+) {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    const request =
+        sharedRequests.find(
+            function(item){
+                return item.id === id;
+            }
+        );
+
+
+    if (!request) {
+        return;
+    }
+
+
+    const reason =
+        prompt(
+            "Why are you " +
+            decision.toLowerCase() +
+            "ing this request?"
+        );
+
+
+    if (
+        reason === null ||
+        !reason.trim()
+    ) {
+        return;
+    }
+
+
+    const oldStatus =
+        request.status;
+
+
+    request.status =
+        decision;
+
+
+    request.decidedAt =
+        Date.now();
+
+
+    request.decidedDate =
+        new Date().toLocaleString();
+
+
+    request.decisionReason =
+        reason.trim();
+
+
+    request.decidedBy =
+        "Matt";
+
+
+    try {
+
+        await writeSharedRequest(
+            request
+        );
+
+
+        renderChangeRequests();
+
+
+        recordChange(
+            "Change Request",
+            decision +
+            " request from " +
+            request.requestedBy +
+            ": " +
+            request.change,
+            reason.trim()
+        );
+
+    } catch(error) {
+
+        request.status =
+            oldStatus;
+
+        alert(
+            "The decision could not be saved to the shared database."
+        );
+    }
+}
+
+
+async function deleteChangeRequest(id) {
+
+    if (!editMode) {
+        return;
+    }
+
+
+    const request =
+        sharedRequests.find(
+            function(item){
+                return item.id === id;
+            }
+        );
+
+
+    if (!request) {
+        return;
+    }
+
+
+    const reason =
+        prompt(
+            "Why are you deleting this change request?"
+        );
+
+
+    if (
+        reason === null ||
+        !reason.trim()
+    ) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                sharedDatabaseUrl(
+                    SHARED_REQUESTS_PATH +
+                    "/" +
+                    encodeURIComponent(id)
+                ),
+                {
+                    method:"DELETE"
+                }
+            );
+
+
+        if (!response.ok) {
+            throw new Error(
+                "Delete failed"
+            );
+        }
+
+
+        sharedRequests =
+            sharedRequests.filter(
+                function(item){
+                    return item.id !== id;
+                }
+            );
+
+
+        renderChangeRequests();
+
+
+        recordChange(
+            "Change Request",
+            "Deleted request from " +
+            request.requestedBy,
+            reason.trim()
+        );
+
+    } catch(error) {
+
+        alert(
+            "The request could not be deleted from the shared database."
+        );
+    }
+}
+
+
+function renderChangeRequests() {
+
+    const container =
+        document.getElementById(
+            "changeRequestsContainer"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    if (!sharedRequests.length) {
+
+        container.innerHTML =
+            "<p>No change requests yet.</p>";
+
+        const statusBox =
+            document.getElementById(
+                "myRequestStatus"
+            );
+
+        if (statusBox) {
+            statusBox.textContent =
+                "No requests yet.";
+        }
+
+        return;
+    }
+
+
+    sharedRequests.forEach(
+        function(request){
+
+            const status =
+                String(
+                    request.status ||
+                    "PENDING"
+                ).toLowerCase();
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "request-card request-" +
+                status;
+
+
+            const heading =
+                document.createElement(
+                    "h3"
+                );
+
+
+            heading.textContent =
+                "REQUEST — " +
+                (
+                    request.status ||
+                    "PENDING"
+                );
+
+
+            card.appendChild(
+                heading
+            );
+
+
+            const details =
+                document.createElement(
+                    "pre"
+                );
+
+
+            details.textContent =
+                "Requested by: " +
+                (
+                    request.requestedBy ||
+                    "Unknown"
+                ) +
+                "\n" +
+                "Date: " +
+                (
+                    request.createdDate ||
+                    "Unknown"
+                ) +
+                "\n\n" +
+                "Requested change:\n" +
+                (
+                    request.change ||
+                    ""
+                ) +
+                "\n\n" +
+                "Reason:\n" +
+                (
+                    request.reason ||
+                    ""
+                );
+
+
+            if (
+                request.decidedDate
+            ) {
+
+                details.textContent +=
+                    "\n\nDecision date: " +
+                    request.decidedDate +
+                    "\nDecision by: " +
+                    (
+                        request.decidedBy ||
+                        "Matt"
+                    ) +
+                    "\nDecision reason:\n" +
+                    (
+                        request.decisionReason ||
+                        ""
+                    );
+            }
+
+
+            card.appendChild(
+                details
+            );
+
+
+            if (
+                editMode &&
+                request.status === "PENDING"
+            ) {
+
+                const approve =
+                    document.createElement(
+                        "button"
+                    );
+
+                approve.className =
+                    "action-button blue-button";
+
+                approve.textContent =
+                    "APPROVE";
+
+                approve.onclick =
+                    function(){
+
+                        decideChangeRequest(
+                            request.id,
+                            "APPROVED"
+                        );
+
+                    };
+
+                card.appendChild(
+                    approve
+                );
+
+
+                const deny =
+                    document.createElement(
+                        "button"
+                    );
+
+                deny.className =
+                    "action-button";
+
+                deny.textContent =
+                    "DENY";
+
+                deny.onclick =
+                    function(){
+
+                        decideChangeRequest(
+                            request.id,
+                            "DENIED"
+                        );
+
+                    };
+
+                card.appendChild(
+                    deny
+                );
+            }
+
+
+            if (editMode) {
+
+                const deleteButton =
+                    document.createElement(
+                        "button"
+                    );
+
+                deleteButton.className =
+                    "delete-button";
+
+                deleteButton.textContent =
+                    "DELETE REQUEST";
+
+                deleteButton.onclick =
+                    function(){
+
+                        deleteChangeRequest(
+                            request.id
+                        );
+
+                    };
+
+                card.appendChild(
+                    deleteButton
+                );
+            }
+
+
+            container.appendChild(
+                card
+            );
+        }
+    );
+
+
+    const statusBox =
+        document.getElementById(
+            "myRequestStatus"
+        );
+
+
+    if (statusBox) {
+
+        statusBox.innerHTML =
+            sharedRequests
+                .slice(0,5)
+                .map(
+                    function(request){
+
+                        return (
+                            "<div class=\"request-status\">" +
+                            "<strong>" +
+                            escapeHTML(
+                                request.status ||
+                                "PENDING"
+                            ) +
+                            "</strong> — " +
+                            escapeHTML(
+                                request.requestedBy ||
+                                "Unknown"
+                            ) +
+                            " — " +
+                            escapeHTML(
+                                request.change ||
+                                ""
+                            ) +
+                            "</div>"
+                        );
+                    }
+                )
+                .join("<br>");
+    }
+}
+
+
+function startSharedRequestSync() {
+
+    if (requestSyncTimer) {
+
+        clearInterval(
+            requestSyncTimer
+        );
+    }
+
+
+    loadSharedRequests();
+
+
+    requestSyncTimer =
+        setInterval(
+            loadSharedRequests,
+            3000
+        );
+}
+
+
+/* ============================================================
+   SUBMISSIONS
+   ============================================================ */
+
+function submissionDateKey(value) {
+    return value || "";
+}
+
+
+function getSubmissionScheduledPerson(dateString) {
+    if (!dateString) return "NOT SET";
+    return getScheduledPerson(dateString);
+}
+
+
+function updateSubmissionAssignment() {
+    const dateInput = document.getElementById("submissionDate");
+    const result = document.getElementById("submissionScheduleResult");
+
+    if (!dateInput || !result) return;
+
+    const date = dateInput.value;
+
+    if (!date) {
+        result.innerHTML = "Choose a date to see who is scheduled.";
+        return;
+    }
+
+    const person = getSubmissionScheduledPerson(date);
+
+    result.innerHTML =
+        "DATE: <strong>" + formatToolDate(date) + "</strong><br><br>" +
+        "ASSIGNED TO: <strong>" + escapeHTML(person) + "</strong>";
+}
+
+
+function newSubmissionAssignment() {
+    const dateInput = document.getElementById("submissionDate");
+    const title = document.getElementById("submissionTitle");
+    const instructions = document.getElementById("submissionInstructions");
+    const message = document.getElementById("submissionAssignmentMessage");
+
+    if (dateInput) dateInput.value = "";
+    if (title) title.value = "Daily Shower Submission";
+    if (instructions) instructions.value = "Sign the daily shower paper in the submission box.";
+    if (message) message.textContent = "";
+
+    updateSubmissionAssignment();
+}
+
+
+async function assignSubmission() {
+    if (!editMode) return;
+
+    const date = document.getElementById("submissionDate").value;
+    const title = document.getElementById("submissionTitle").value.trim();
+    const instructions = document.getElementById("submissionInstructions").value.trim();
+    const message = document.getElementById("submissionAssignmentMessage");
+
+    if (!date) {
+        message.textContent = "Choose a date first.";
+        return;
+    }
+
+    const assignedTo = getSubmissionScheduledPerson(date);
+
+    if (!assignedTo || assignedTo === "NOT SET") {
+        message.textContent = "That date does not have a person assigned on the calendar yet.";
+        return;
+    }
+
+    const record = {
+        id: "submission-" + Date.now(),
+        date: date,
+        assignedTo: assignedTo,
+        title: title || "Daily Shower Submission",
+        instructions: instructions || "Sign the daily shower paper in the submission box.",
+        status: "ASSIGNED",
+        signature: "",
+        assignedAt: new Date().toISOString(),
+        submittedAt: ""
+    };
+
+    submissions.unshift(record);
+    localStorage.setItem("showerSubmissions", JSON.stringify(submissions));
+
+    if (typeof recordChange === "function") {
+        recordChange(
+            "SUBMISSION ASSIGNED",
+            "Assigned " + record.title + " to " + assignedTo + " for " + formatToolDate(date) + "."
+        );
+    }
+
+    message.textContent = "Submission assigned to " + assignedTo + ".";
+    renderSubmissions();
+    scheduleSharedAppSave();
+}
+
+
+function renderSubmissions() {
+    const assignmentBox = document.getElementById("submissionAssignmentBox");
+    const activeContainer = document.getElementById("activeSubmissionContainer");
+    const historyContainer = document.getElementById("submissionHistoryContainer");
+
+    if (!activeContainer || !historyContainer) return;
+
+    if (assignmentBox) {
+        assignmentBox.style.display = editMode ? "block" : "none";
+    }
+
+    const pending = submissions
+        .filter(function(item){ return item && item.status !== "SUBMITTED"; })
+        .sort(function(a,b){ return String(b.date).localeCompare(String(a.date)); });
+
+    const active = pending.length ? pending[0] : null;
+
+    if (!active) {
+        activeContainer.innerHTML = "<p>No submission is currently assigned.</p>";
+    } else {
+        activeContainer.innerHTML = renderSubmissionCard(active, true);
+        setupSubmissionSignature(active.id);
+    }
+
+    renderSubmissionHistory(historyContainer);
+}
+
+
+function renderSubmissionCard(item, active) {
+    const submitted = item.status === "SUBMITTED";
+
+    let html =
+        '<div class="submission-card">' +
+        '<h2>' + escapeHTML(item.title || "Daily Shower Submission") + '</h2>' +
+        '<p><strong>DATE:</strong> ' + escapeHTML(formatToolDate(item.date)) + '</p>' +
+        '<p><strong>ASSIGNED TO:</strong> ' + escapeHTML(item.assignedTo || "-") + '</p>' +
+        '<div class="rules-box"><strong>INSTRUCTIONS</strong><br><br>' +
+        escapeHTML(item.instructions || "") + '</div>';
+
+    if (submitted) {
+        html +=
+            '<p><strong>STATUS:</strong> SUBMITTED</p>' +
+            (item.signature ? '<img class="saved-submission-signature" src="' + item.signature + '" alt="Saved signature">' : '');
+    } else if (active) {
+        html +=
+            '<p><strong>STATUS:</strong> WAITING FOR SIGNATURE</p>' +
+            '<label for="submissionSignatureCanvas">SIGN HERE WITH YOUR FINGER, MOUSE, OR STYLUS</label>' +
+            '<canvas id="submissionSignatureCanvas" class="submission-signature" width="700" height="220"></canvas>' +
+            '<div class="controls">' +
+            '<button id="clearSignatureButton" class="action-button" onclick="clearSubmissionSignature()">CLEAR SIGNATURE</button>' +
+            '<button id="submitSignatureButton" class="action-button blue-button" onclick="submitSignature(\'' + item.id + '\')">SUBMIT SIGNATURE</button>' +
+            '</div>' +
+            '<div id="submissionSignatureMessage" class="request-status"></div>';
+    }
+
+    if (editMode) {
+        html += '<button class="delete-button" onclick="deleteSubmission(\'' + item.id + '\')">DELETE SUBMISSION</button>';
+    }
+
+    html += '</div>';
+    return html;
+}
+
+
+function renderSubmissionHistory(container) {
+    if (!submissions.length) {
+        container.innerHTML = "<p>No submissions yet.</p>";
+        return;
+    }
+
+    const sorted = submissions.slice().sort(function(a,b){
+        return String(b.date).localeCompare(String(a.date));
+    });
+
+    container.innerHTML = sorted.map(function(item){
+        const status = item.status === "SUBMITTED" ? "SUBMITTED" : "ASSIGNED";
+        return '<div class="submission-history-card saved-item">' +
+            '<h3>' + escapeHTML(item.title || "Daily Shower Submission") + '</h3>' +
+            '<p><strong>DATE:</strong> ' + escapeHTML(formatToolDate(item.date)) + '</p>' +
+            '<p><strong>ASSIGNED TO:</strong> ' + escapeHTML(item.assignedTo || "-") + '</p>' +
+            '<p><strong>STATUS:</strong> ' + status + '</p>' +
+            (item.status === "SUBMITTED" && item.signature ? '<img class="saved-submission-signature" src="' + item.signature + '" alt="Saved signature">' : '') +
+            (editMode ? '<button class="delete-button" onclick="deleteSubmission(\'' + item.id + '\')">DELETE</button>' : '') +
+            '</div>';
+    }).join("");
+}
+
+
+function setupSubmissionSignature(id) {
+    const canvas = document.getElementById("submissionSignatureCanvas");
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    let drawing = false;
+    let hasDrawn = false;
+
+    function position(event) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: (event.clientX - rect.left) * (canvas.width / rect.width),
+            y: (event.clientY - rect.top) * (canvas.height / rect.height)
+        };
+    }
+
+    canvas.addEventListener("pointerdown", function(event){
+        drawing = true;
+        hasDrawn = true;
+        canvas.setPointerCapture(event.pointerId);
+        const p = position(event);
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        event.preventDefault();
+    });
+
+    canvas.addEventListener("pointermove", function(event){
+        if (!drawing) return;
+        const p = position(event);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+        event.preventDefault();
+    });
+
+    ["pointerup", "pointercancel", "pointerleave"].forEach(function(type){
+        canvas.addEventListener(type, function(){
+            drawing = false;
+        });
+    });
+
+    canvas.dataset.submissionId = id;
+    canvas.dataset.hasDrawn = "false";
+
+    canvas.addEventListener("pointerdown", function(){
+        canvas.dataset.hasDrawn = "true";
+    });
+}
+
+
+function clearSubmissionSignature() {
+    const canvas = document.getElementById("submissionSignatureCanvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.dataset.hasDrawn = "false";
+}
+
+
+async function submitSignature(id) {
+    const canvas = document.getElementById("submissionSignatureCanvas");
+    const message = document.getElementById("submissionSignatureMessage");
+
+    if (!canvas || canvas.dataset.hasDrawn !== "true") {
+        if (message) message.textContent = "Please sign inside the box first.";
+        return;
+    }
+
+    const index = submissions.findIndex(function(item){ return item.id === id; });
+    if (index === -1) return;
+
+    submissions[index].signature = canvas.toDataURL("image/png");
+    submissions[index].status = "SUBMITTED";
+    submissions[index].submittedAt = new Date().toISOString();
+
+    localStorage.setItem("showerSubmissions", JSON.stringify(submissions));
+
+    try {
+        await fetch(
+            sharedDatabaseUrl(SHARED_SUBMISSIONS_PATH),
+            {
+                method:"PUT",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify(submissions)
+            }
+        );
+    } catch(error) {
+        console.error("Could not save submission signature:", error);
+    }
+
+    if (message) message.textContent = "Signature submitted.";
+    renderSubmissions();
+}
+
+
+function deleteSubmission(id) {
+    if (!editMode) return;
+
+    submissions = submissions.filter(function(item){ return item.id !== id; });
+    localStorage.setItem("showerSubmissions", JSON.stringify(submissions));
+
+    if (typeof recordChange === "function") {
+        recordChange("SUBMISSION DELETED", "Deleted a submission.");
+    }
+
+    renderSubmissions();
+    scheduleSharedAppSave();
+}
+
+
+/* ============================================================
+   SYSTEM VIOLATIONS
+   ============================================================ */
+
+function setViolationToday() {
+    const input = document.getElementById("violationDate");
+    if (!input) return;
+
+    const today = new Date();
+    input.value =
+        today.getFullYear() + "-" +
+        String(today.getMonth() + 1).padStart(2, "0") + "-" +
+        String(today.getDate()).padStart(2, "0");
+}
+
+function newViolation() {
+    const date = document.getElementById("violationDate");
+    const type = document.getElementById("violationType");
+    const rule = document.getElementById("violationRule");
+    const notes = document.getElementById("violationNotes");
+    const message = document.getElementById("violationMessage");
+
+    setViolationToday();
+    if (type) type.value = "";
+    if (rule) rule.value = "";
+    if (notes) notes.value = "";
+    if (message) message.textContent = "";
+}
+
+function saveViolation() {
+    if (!editMode) return;
+
+    const date = document.getElementById("violationDate").value;
+    const type = document.getElementById("violationType").value;
+    const rule = document.getElementById("violationRule").value;
+    const notes = document.getElementById("violationNotes").value.trim();
+    const message = document.getElementById("violationMessage");
+
+    if (!date) {
+        message.textContent = "Choose a date first.";
+        return;
+    }
+
+    if (!type) {
+        message.textContent = "Choose a violation first.";
+        return;
+    }
+
+    if (!rule) {
+        message.textContent = "Choose the rule that was broken.";
+        return;
+    }
+
+    if (!notes) {
+        message.textContent = "Add notes describing what happened.";
+        return;
+    }
+
+    const previousSameRule = violations.filter(function(item) {
+        return String(item.rule || "").toLowerCase() === rule.toLowerCase();
+    });
+
+    const repeatNumber = previousSameRule.length + 1;
+    const isRepeat = previousSameRule.length > 0;
+
+    violations.unshift({
+        id: "violation-" + Date.now(),
+        date: date,
+        type: type,
+        rule: rule,
+        notes: notes,
+        isRepeat: isRepeat,
+        repeatNumber: repeatNumber,
+        createdAt: new Date().toISOString()
+    });
+
+    localStorage.setItem("showerViolations", JSON.stringify(violations));
+
+    if (typeof recordChange === "function") {
+        recordChange("SYSTEM VIOLATION RECORDED", type + " on " + formatToolDate(date) + ".");
+    }
+
+    message.textContent = "Violation saved.";
+    renderViolations();
+    scheduleSharedAppSave();
+}
+
+function deleteViolation(id) {
+    if (!editMode) return;
+
+    violations = violations.filter(function(item) {
+        return item.id !== id;
+    });
+
+    localStorage.setItem("showerViolations", JSON.stringify(violations));
+    renderViolations();
+    scheduleSharedAppSave();
+}
+
+function renderViolations() {
+    const container = document.getElementById("violationsContainer");
+    if (!container) return;
+
+    if (!violations.length) {
+        container.innerHTML = "<p>No violations recorded.</p>";
+        return;
+    }
+
+    const sorted = violations.slice().sort(function(a, b) {
+        return String(b.date).localeCompare(String(a.date));
+    });
+
+    container.innerHTML = sorted.map(function(item) {
+        const repeatLabel = item.isRepeat
+            ? '<p><strong>REPEAT VIOLATION #' + escapeHTML(String(item.repeatNumber || 2)) + '</strong></p>'
+            : '<p><strong>FIRST OCCURRENCE</strong></p>';
+
+        return '<div class="saved-item">' +
+            '<h3>' + escapeHTML(item.type || "Violation") + '</h3>' +
+            repeatLabel +
+            '<p><strong>RULE BROKEN:</strong> ' + escapeHTML(item.rule || "Not recorded") + '</p>' +
+            '<p><strong>DATE:</strong> ' + escapeHTML(formatToolDate(item.date)) + '</p>' +
+            '<p><strong>NOTES:</strong> ' + escapeHTML(item.notes || "") + '</p>' +
+            '<button class="delete-button" onclick="deleteViolation(\'' + item.id + '\')">DELETE</button>' +
+            '</div>';
+    }).join("");
+}
+
+
+/* ============================================================
+   INITIALIZE
+   ============================================================ */
+
+function initializePage() {
+
+    setToday();
+
+    setRewardToday();
+
+    setupPointsMode();
+
+    setScheduleToolToday();
+
+    renderAllData();
+
+    startCountdownTimer();
+
+
+    if (editMode) {
+
+        showSection(
+            "dashboard"
+        );
+
+    } else {
+
+        showSection(
+            "dashboard"
+        );
+    }
+}
+
+
+/* ============================================================
+   ENTER KEY
+   ============================================================ */
+
+// Responsive sidebar controls.
+(function setupPortalNavigation(){
+    const sidebar = document.getElementById("sidebar");
+    const menuToggle = document.getElementById("menuToggle");
+    if (!sidebar || !menuToggle) return;
+    menuToggle.addEventListener("click", function(){
+        const open = sidebar.classList.toggle("open");
+        menuToggle.setAttribute("aria-expanded", String(open));
+        menuToggle.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
+    });
+    document.addEventListener("keydown", function(event){
+        if (event.key === "Escape" && sidebar.classList.contains("open")) {
+            sidebar.classList.remove("open");
+            menuToggle.setAttribute("aria-expanded", "false");
+            menuToggle.focus();
+        }
+    });
+})();
+
+document.getElementById(
+    "passwordInput"
+).addEventListener(
+    "keydown",
+    function(event){
+
+        if (
+            event.key === "Enter"
+        ) {
+            login();
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
